@@ -11,148 +11,207 @@
         <h1 class="title">🎮 ゲームを選んで遊ぼう！ 🎮</h1>
         <p class="subtitle">好きなゲームのボタンを押してね！</p>
         
-        <div class="games-grid">
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/1-neko_catch_game/')">
+        <!-- 検索バー -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 ゲームを検索してみよう..." class="search-input">
+            <div class="search-clear" id="searchClear">✖</div>
+        </div>
+        
+        <!-- カテゴリフィルター -->
+        <div class="category-filter">
+            <button class="category-btn active" data-category="all">🎯 すべて</button>
+            <button class="category-btn" data-category="action">⚡ アクション</button>
+            <button class="category-btn" data-category="quiz">🧠 クイズ</button>
+            <button class="category-btn" data-category="battle">⚔️ バトル</button>
+            <button class="category-btn" data-category="adventure">🏰 冒険</button>
+            <button class="category-btn" data-category="learning">📚 学習</button>
+        </div>
+        
+        <!-- ゲーム数表示 -->
+        <div class="game-count">
+            <span id="gameCount">28</span> 個のゲームが見つかりました！
+        </div>
+        
+        <div class="games-grid" id="gamesGrid">
+            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/1-neko_catch_game/')">
                 <span class="game-icon">🐱</span>
                 <span class="game-title">ねこキャッチゲーム</span>
                 <span class="game-desc">かわいいねこを捕まえよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/2-kagoubutu_game/')">
+            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/2-kagoubutu_game/')">
                 <span class="game-icon">🧪</span>
                 <span class="game-title">化合物クイズゲーム</span>
                 <span class="game-desc">科学の力で問題を解こう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/3-amida-game/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/3-amida-game/')">
                 <span class="game-icon">🎯</span>
                 <span class="game-title">あみだくじゲーム</span>
                 <span class="game-desc">運だめし！どの道を選ぶ？</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/4-battle-game/')">
+            <button class="game-button" data-category="battle" onclick="playGame('https://titan11111.github.io/4-battle-game/')">
                 <span class="game-icon">⚔️</span>
                 <span class="game-title">バトルゲーム（基本）</span>
                 <span class="game-desc">戦って勝利を目指そう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/5-meiro_game/')">
+            <button class="game-button" data-category="adventure quiz" onclick="playGame('https://titan11111.github.io/5-meiro_game/')">
                 <span class="game-icon">🏰</span>
                 <span class="game-title">迷路クイズRPG</span>
                 <span class="game-desc">迷路を探検してクイズに挑戦！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/6-eigo/')">
+            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/6-eigo-game/')">
                 <span class="game-icon">🗣️</span>
                 <span class="game-title">英単語クイズゲーム</span>
                 <span class="game-desc">英語の単語を覚えよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/7-iro_game/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/7-iro_game/')">
                 <span class="game-icon">🌈</span>
                 <span class="game-title">色育成ゲーム</span>
                 <span class="game-desc">きれいな色を育てよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/8-sannaru_game/')">
+            <button class="game-button" data-category="battle learning" onclick="playGame('https://titan11111.github.io/8-sannaru_game/')">
                 <span class="game-icon">💥</span>
                 <span class="game-title">酸アルバトルゲーム</span>
                 <span class="game-desc">科学バトルで勝負だ！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/9-battle2-game/')">
+            <button class="game-button" data-category="battle" onclick="playGame('https://titan11111.github.io/9-battle2_game/')">
                 <span class="game-icon">🔥</span>
                 <span class="game-title">バトルゲーム2（進化版）</span>
                 <span class="game-desc">パワーアップしたバトル！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/10-senntaku_game/')">
+            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/10-senntaku_game/')">
                 <span class="game-icon">❓</span>
                 <span class="game-title">選択クイズゲーム</span>
                 <span class="game-desc">正しい答えを選ぼう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/11-kaimono_game/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/11-kaimono_game/')">
                 <span class="game-icon">🛒</span>
                 <span class="game-title">買い物ゲーム</span>
                 <span class="game-desc">上手にお買い物しよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/12-buysell_game/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/12-buysell_game/')">
                 <span class="game-icon">💰</span>
                 <span class="game-title">売買シミュレーションゲーム</span>
                 <span class="game-desc">商売の達人になろう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/13-histry/')">
+            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/13-histry/')">
                 <span class="game-icon">📚</span>
                 <span class="game-title">歴史ストーリークイズ</span>
                 <span class="game-desc">歴史の世界を冒険しよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/14-dokidoki/')">
+            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/14-dokidoki/')">
                 <span class="game-icon">💝</span>
                 <span class="game-title">ドキドキ診断ゲーム</span>
                 <span class="game-desc">君の気持ちを診断するよ！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/15-selftalk/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/15-selftalk/')">
                 <span class="game-icon">💭</span>
                 <span class="game-title">セルフトークゲーム</span>
                 <span class="game-desc">自分との対話を楽しもう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/16-nigeru/')">
+            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/16-nigeru/')">
                 <span class="game-icon">🤖</span>
                 <span class="game-title">ロボットランナー</span>
                 <span class="game-desc">ロボットで障害物を避けよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/17-action/')">
+            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/17-action/')">
                 <span class="game-icon">🎮</span>
                 <span class="game-title">サイバーアクション</span>
                 <span class="game-desc">サイバー世界で戦おう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/18-eigo2/')">
+            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/18-eigo2/')">
                 <span class="game-icon">🔤</span>
                 <span class="game-title">サイバー英語学習</span>
                 <span class="game-desc">中学生向け英語をマスター！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/19-rakka/')">
+            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/19-rakka/')">
                 <span class="game-icon">🍂</span>
                 <span class="game-title">落下ゲーム</span>
                 <span class="game-desc">落ちてくるものをキャッチ！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/20-taisyou/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/20-taisyou/')">
                 <span class="game-icon">🎯</span>
                 <span class="game-title">対称ゲーム</span>
                 <span class="game-desc">対称の美しさを楽しもう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/21-sanpo/')">
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/21-sanpo/')">
                 <span class="game-icon">🌸</span>
                 <span class="game-title">おさんぽ日和</span>
                 <span class="game-desc">街を散歩して宝物を見つけよう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/22-akusyonn/')">
+            <button class="game-button" data-category="battle" onclick="playGame('https://titan11111.github.io/22-akusyonn/')">
                 <span class="game-icon">⚡</span>
                 <span class="game-title">呪符覚醒</span>
                 <span class="game-desc">神秘的な力で戦おう！</span>
             </button>
             
-            <button class="game-button" onclick="playGame('https://titan11111.github.io/23-kyuusyoku/')">
+            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/23-kyuusyoku/')">
                 <span class="game-icon">🍽️</span>
                 <span class="game-title">給食当番リズム</span>
                 <span class="game-desc">みんなに美味しい給食を配ろう！</span>
             </button>
+            
+            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/24-nekonekoneko/')">
+                <span class="game-icon">🐾</span>
+                <span class="game-title">ねこねこねこ</span>
+                <span class="game-desc">たくさんのねこと遊ぼう！</span>
+            </button>
+            
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/25-heiwa/')">
+                <span class="game-icon">🕊️</span>
+                <span class="game-title">平和な世界</span>
+                <span class="game-desc">平和な世界を冒険しよう！</span>
+            </button>
+            
+            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/26-bouzu/')">
+                <span class="game-icon">🧘</span>
+                <span class="game-title">坊主めくり</span>
+                <span class="game-desc">昔懐かしいカードゲーム！</span>
+            </button>
+            
+            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/27-mayoimori/')">
+                <span class="game-icon">🌲</span>
+                <span class="game-title">迷いの森</span>
+                <span class="game-desc">神秘的な森を探検しよう！</span>
+            </button>
+            
+            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/28-quiz3/')">
+                <span class="game-icon">🤔</span>
+                <span class="game-title">クイズ３</span>
+                <span class="game-desc">頭を使って問題を解こう！</span>
+            </button>
+        </div>
+        
+        <!-- 検索結果が見つからない場合のメッセージ -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <div class="no-results-icon">🔍</div>
+            <h3>ゲームが見つかりませんでした</h3>
+            <p>別のキーワードで検索してみてください</p>
         </div>
         
         <div class="footer">
             <p>🌟 すべてのゲームはスマホでも遊べるよ！ 🌟</p>
+            <p class="total-games">全 <span id="totalGames">28</span> 種類のゲームを楽しもう！</p>
         </div>
     </div>
     
