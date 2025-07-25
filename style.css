@@ -32,6 +32,97 @@ body {
   opacity: 0.9;
 }
 
+/* 検索バー */
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  outline: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.search-clear {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ff6b6b;
+  color: white;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.search-clear:hover {
+  background: #ff5252;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* カテゴリフィルター */
+.category-filter {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.category-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.category-btn.active {
+  background: linear-gradient(145deg, #4CAF50, #45a049);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* ゲーム数表示 */
+.game-count {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  animation: fadeInUp 0.5s ease;
+}
+
 .games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -55,17 +146,25 @@ body {
   text-decoration: none;
   position: relative;
   overflow: hidden;
+  opacity: 1;
+  transform: scale(1);
 }
 
 .game-button:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.02);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   background: linear-gradient(145deg, #f0f0f0, #ffffff);
 }
 
 .game-button:active {
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(0.98);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.game-button.hidden {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
 }
 
 .game-icon {
@@ -90,6 +189,30 @@ body {
   display: block;
 }
 
+/* 検索結果なしメッセージ */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  animation: fadeInUp 0.5s ease;
+}
+
+.no-results-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+.no-results h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.no-results p {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
 .footer {
   text-align: center;
   padding: 20px;
@@ -100,7 +223,12 @@ body {
 
 .footer p {
   font-size: 1.1rem;
-  margin: 0;
+  margin: 5px 0;
+}
+
+.total-games {
+  opacity: 0.8;
+  font-size: 1rem !important;
 }
 
 /* スマホ対応 */
@@ -111,6 +239,20 @@ body {
   
   .subtitle {
       font-size: 1rem;
+  }
+  
+  .search-input {
+      font-size: 1rem;
+      padding: 12px 18px;
+  }
+  
+  .category-filter {
+      gap: 8px;
+  }
+  
+  .category-btn {
+      padding: 8px 16px;
+      font-size: 0.8rem;
   }
   
   .games-grid {
@@ -142,6 +284,15 @@ body {
 @media (max-width: 480px) {
   .title {
       font-size: 1.8rem;
+  }
+  
+  .search-input {
+      font-size: 0.9rem;
+  }
+  
+  .category-btn {
+      padding: 6px 12px;
+      font-size: 0.75rem;
   }
   
   .game-button {
@@ -188,6 +339,17 @@ body {
   }
 }
 
+@keyframes fadeInUp {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
 /* タッチデバイス向けの調整 */
 @media (pointer: coarse) {
   .game-button {
@@ -200,7 +362,33 @@ body {
   }
   
   .game-button:active {
-      transform: scale(0.98);
+      transform: scale(0.95);
       background: linear-gradient(145deg, #e0e0e0, #f5f5f5);
+  }
+  
+  .category-btn:hover {
+      transform: none;
+  }
+  
+  .category-btn:active {
+      transform: scale(0.95);
+  }
+}
+
+/* 新しいゲームのハイライト効果 */
+.game-button.highlight {
+  animation: highlightPulse 2s ease-in-out;
+}
+
+@keyframes highlightPulse {
+  0% {
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+      box-shadow: 0 8px 15px rgba(255, 215, 0, 0.4);
+      transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
   }
 }
