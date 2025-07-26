@@ -3,218 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ゲーム選択画面</title>
+    <title>🎮 魔法のゲームポータル | 楽しいゲーム大集合！</title>
+    
+    <!-- SEO対策 -->
+    <meta name="description" content="小学生から大人まで楽しめるゲームポータルサイト。アクション、クイズ、アドベンチャーなど様々なジャンルのゲームを用意しています。">
+    <meta name="keywords" content="ゲーム,小学生,クイズ,アクション,アドベンチャー,学習,教育">
+    <meta name="author" content="Game Portal">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="🎮 魔法のゲームポータル">
+    <meta property="og:description" content="楽しいゲームがいっぱい！小学生から大人まで遊べるゲーム集">
+    <meta property="og:image" content="">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="🎮 魔法のゲームポータル">
+    <meta property="twitter:description" content="楽しいゲームがいっぱい！小学生から大人まで遊べるゲーム集">
+    <meta property="twitter:image" content="">
+    
+    <!-- PWA対応 -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ゲームポータル">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
+    
+    <!-- Preload重要なリソース -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    
+    <!-- スタイルシート -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Google Fonts (optional) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 読み込み中のスタイル */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loading-wizard {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+        
+        .loading-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            animation: loading 2s ease forwards;
+        }
+        
+        @keyframes loading {
+            to { width: 100%; }
+        }
+        
+        /* ダークテーマ時のフォントファミリー調整 */
+        body {
+            font-family: 'Nunito', 'Arial', 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">🎮 ゲームを選んで遊ぼう！ 🎮</h1>
-        <p class="subtitle">好きなゲームのボタンを押してね！</p>
-        
-        <!-- 検索バー -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 ゲームを検索してみよう..." class="search-input">
-            <div class="search-clear" id="searchClear">✖</div>
-        </div>
-        
-        <!-- カテゴリフィルター -->
-        <div class="category-filter">
-            <button class="category-btn active" data-category="all">🎯 すべて</button>
-            <button class="category-btn" data-category="action">⚡ アクション</button>
-            <button class="category-btn" data-category="quiz">🧠 クイズ</button>
-            <button class="category-btn" data-category="battle">⚔️ バトル</button>
-            <button class="category-btn" data-category="adventure">🏰 冒険</button>
-            <button class="category-btn" data-category="learning">📚 学習</button>
-        </div>
-        
-        <!-- ゲーム数表示 -->
-        <div class="game-count">
-            <span id="gameCount">28</span> 個のゲームが見つかりました！
-        </div>
-        
-        <div class="games-grid" id="gamesGrid">
-            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/1-neko_catch_game/')">
-                <span class="game-icon">🐱</span>
-                <span class="game-title">ねこキャッチゲーム</span>
-                <span class="game-desc">かわいいねこを捕まえよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/2-kagoubutu_game/')">
-                <span class="game-icon">🧪</span>
-                <span class="game-title">化合物クイズゲーム</span>
-                <span class="game-desc">科学の力で問題を解こう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/3-amida-game/')">
-                <span class="game-icon">🎯</span>
-                <span class="game-title">あみだくじゲーム</span>
-                <span class="game-desc">運だめし！どの道を選ぶ？</span>
-            </button>
-            
-            <button class="game-button" data-category="battle" onclick="playGame('https://titan11111.github.io/4-battle-game/')">
-                <span class="game-icon">⚔️</span>
-                <span class="game-title">バトルゲーム（基本）</span>
-                <span class="game-desc">戦って勝利を目指そう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure quiz" onclick="playGame('https://titan11111.github.io/5-meiro_game/')">
-                <span class="game-icon">🏰</span>
-                <span class="game-title">迷路クイズRPG</span>
-                <span class="game-desc">迷路を探検してクイズに挑戦！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/6-eigo-game/')">
-                <span class="game-icon">🗣️</span>
-                <span class="game-title">英単語クイズゲーム</span>
-                <span class="game-desc">英語の単語を覚えよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/7-iro_game/')">
-                <span class="game-icon">🌈</span>
-                <span class="game-title">色育成ゲーム</span>
-                <span class="game-desc">きれいな色を育てよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="battle learning" onclick="playGame('https://titan11111.github.io/8-sannaru_game/')">
-                <span class="game-icon">💥</span>
-                <span class="game-title">酸アルバトルゲーム</span>
-                <span class="game-desc">科学バトルで勝負だ！</span>
-            </button>
-            
-            <button class="game-button" data-category="battle" onclick="playGame('https://titan11111.github.io/9-battle2_game/')">
-                <span class="game-icon">🔥</span>
-                <span class="game-title">バトルゲーム2（進化版）</span>
-                <span class="game-desc">パワーアップしたバトル！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/10-senntaku_game/')">
-                <span class="game-icon">❓</span>
-                <span class="game-title">選択クイズゲーム</span>
-                <span class="game-desc">正しい答えを選ぼう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/11-kaimono_game/')">
-                <span class="game-icon">🛒</span>
-                <span class="game-title">買い物ゲーム</span>
-                <span class="game-desc">上手にお買い物しよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/12-buysell_game/')">
-                <span class="game-icon">💰</span>
-                <span class="game-title">売買シミュレーションゲーム</span>
-                <span class="game-desc">商売の達人になろう！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/13-histry/')">
-                <span class="game-icon">📚</span>
-                <span class="game-title">歴史ストーリークイズ</span>
-                <span class="game-desc">歴史の世界を冒険しよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/14-dokidoki/')">
-                <span class="game-icon">💝</span>
-                <span class="game-title">ドキドキ診断ゲーム</span>
-                <span class="game-desc">君の気持ちを診断するよ！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/15-selftalk/')">
-                <span class="game-icon">💭</span>
-                <span class="game-title">セルフトークゲーム</span>
-                <span class="game-desc">自分との対話を楽しもう！</span>
-            </button>
-            
-            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/16-nigeru/')">
-                <span class="game-icon">🤖</span>
-                <span class="game-title">ロボットランナー</span>
-                <span class="game-desc">ロボットで障害物を避けよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/17-action/')">
-                <span class="game-icon">🎮</span>
-                <span class="game-title">サイバーアクション</span>
-                <span class="game-desc">サイバー世界で戦おう！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz learning" onclick="playGame('https://titan11111.github.io/18-eigo2/')">
-                <span class="game-icon">🔤</span>
-                <span class="game-title">サイバー英語学習</span>
-                <span class="game-desc">中学生向け英語をマスター！</span>
-            </button>
-            
-            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/19-rakka/')">
-                <span class="game-icon">🍂</span>
-                <span class="game-title">落下ゲーム</span>
-                <span class="game-desc">落ちてくるものをキャッチ！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/20-taisyou/')">
-                <span class="game-icon">🎯</span>
-                <span class="game-title">対称ゲーム</span>
-                <span class="game-desc">対称の美しさを楽しもう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/21-sanpo/')">
-                <span class="game-icon">🌸</span>
-                <span class="game-title">おさんぽ日和</span>
-                <span class="game-desc">街を散歩して宝物を見つけよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="battle" onclick="playGame('https://titan11111.github.io/22-akusyonn/')">
-                <span class="game-icon">⚡</span>
-                <span class="game-title">呪符覚醒</span>
-                <span class="game-desc">神秘的な力で戦おう！</span>
-            </button>
-            
-            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/23-kyuusyoku/')">
-                <span class="game-icon">🍽️</span>
-                <span class="game-title">給食当番リズム</span>
-                <span class="game-desc">みんなに美味しい給食を配ろう！</span>
-            </button>
-            
-            <button class="game-button" data-category="action" onclick="playGame('https://titan11111.github.io/24-nekonekoneko/')">
-                <span class="game-icon">🐾</span>
-                <span class="game-title">ねこねこねこ</span>
-                <span class="game-desc">たくさんのねこと遊ぼう！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/25-heiwa/')">
-                <span class="game-icon">🕊️</span>
-                <span class="game-title">平和な世界</span>
-                <span class="game-desc">平和な世界を冒険しよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/26-bouzu/')">
-                <span class="game-icon">🧘</span>
-                <span class="game-title">坊主めくり</span>
-                <span class="game-desc">昔懐かしいカードゲーム！</span>
-            </button>
-            
-            <button class="game-button" data-category="adventure" onclick="playGame('https://titan11111.github.io/27-mayoimori/')">
-                <span class="game-icon">🌲</span>
-                <span class="game-title">迷いの森</span>
-                <span class="game-desc">神秘的な森を探検しよう！</span>
-            </button>
-            
-            <button class="game-button" data-category="quiz" onclick="playGame('https://titan11111.github.io/28-quiz3/')">
-                <span class="game-icon">🤔</span>
-                <span class="game-title">クイズ３</span>
-                <span class="game-desc">頭を使って問題を解こう！</span>
-            </button>
-        </div>
-        
-        <!-- 検索結果が見つからない場合のメッセージ -->
-        <div class="no-results" id="noResults" style="display: none;">
-            <div class="no-results-icon">🔍</div>
-            <h3>ゲームが見つかりませんでした</h3>
-            <p>別のキーワードで検索してみてください</p>
-        </div>
-        
-        <div class="footer">
-            <p>🌟 すべてのゲームはスマホでも遊べるよ！ 🌟</p>
-            <p class="total-games">全 <span id="totalGames">28</span> 種類のゲームを楽しもう！</p>
+    <!-- 読み込み画面 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-wizard">🧙‍♂️</div>
+        <div class="loading-text">魔法をかけています...</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
         </div>
     </div>
-    
+
+    <div class="container">
+        <!-- ヘッダー部分 -->
+        <header class="header">
+            <div class="wizard-character" id="wizardCharacter" role="img" aria-label="魔法使いキャラクター"></div>
+            <h1 class="title">🎮 魔法のゲームポータル</h1>
+            <p class="subtitle">楽しいゲームがいっぱい！さあ、冒険を始めよう！</p>
+        </header>
+
+        <!-- 検索バー -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="🔍 ゲームを検索してみよう..."
+                autocomplete="off"
+                role="searchbox"
+                aria-label="ゲーム検索"
+            >
+            <button 
+                id="searchClear" 
+                class="search-clear" 
+                type="button"
+                aria-label="検索をクリア"
+                title="検索をクリア"
+            >
+                ×
+            </button>
+        </div>
+
+        <!-- カテゴリフィルター -->
+        <nav class="category-filter" role="tablist" aria-label="ゲームカテゴリー">
+            <!-- JavaScriptで動的に生成されます -->
+        </nav>
+
+        <!-- ゲーム数表示 -->
+        <div class="game-count" id="gameCount" role="status" aria-live="polite">
+            <span id="gameCountNumber">0</span> 個のゲームが見つかりました
+        </div>
+
+        <!-- ゲーム一覧 -->
+        <main class="games-grid" id="gamesGrid" role="main">
+            <!-- JavaScriptで動的に生成されます -->
+        </main>
+
+        <!-- 検索結果なしメッセージ -->
+        <div class="no-results" id="noResults" style="display: none;" role="alert">
+            <div class="no-results-icon">😅</div>
+            <h3>あれれ？見つからないみたい...</h3>
+            <p>別のキーワードで検索してみるか、<br>カテゴリを変えてみてね！</p>
+        </div>
+
+        <!-- フッター -->
+        <footer class="footer">
+            <p>🌟 楽しいゲームで遊んでくれてありがとう！ 🌟</p>
+            <p class="total-games">全<span id="totalGames">0</span>種類のゲームを用意しています</p>
+            <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 15px;">
+                ⚡ より良いゲーム体験のために定期的に更新中 ⚡
+            </p>
+        </footer>
+    </div>
+
+    <!-- 隠しコンテンツ（SEO用） -->
+    <div style="display: none;">
+        <h2>ゲームの種類</h2>
+        <ul>
+            <li>アクションゲーム - 反射神経を鍛える楽しいゲーム</li>
+            <li>クイズゲーム - 頭を使って楽しく学習</li>
+            <li>アドベンチャーゲーム - 探検と冒険の世界</li>
+            <li>バトルゲーム - 戦略的な戦闘ゲーム</li>
+            <li>学習ゲーム - 遊びながら勉強できるゲーム</li>
+        </ul>
+        
+        <p>このサイトは小学生から大人まで楽しめるウェブゲームを集めたポータルサイトです。
+        すべてのゲームはブラウザで直接プレイでき、ダウンロード不要です。
+        教育的な内容も含まれているため、楽しみながら学習することも可能です。</p>
+    </div>
+
+    <!-- スクリプト -->
     <script src="script.js"></script>
+    
+    <!-- 読み込み完了時の処理 -->
+    <script>
+        // ページ読み込み完了時に読み込み画面を非表示
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hidden');
+                
+                // さらに0.5秒後に完全に削除
+                setTimeout(() => {
+                    loadingScreen.remove();
+                }, 500);
+            }, 1000);
+        });
+        
+        // 魔法使いキャラクターをクリックした時の特別な効果
+        document.addEventListener('DOMContentLoaded', function() {
+            const wizardCharacter = document.getElementById('wizardCharacter');
+            let clickCount = 0;
+            
+            wizardCharacter.addEventListener('click', function() {
+                clickCount++;
+                
+                // 魔法のエフェクト
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'bounce 0.6s ease';
+                }, 10);
+                
+                // クリック音
+                if (typeof playClickSound === 'function') {
+                    playClickSound();
+                }
+                
+                // 特別なメッセージ
+                if (clickCount === 5) {
+                    const messages = [
+                        '✨ 隠しコマンド発見！',
+                        '🎊 魔法使いレベルアップ！',
+                        '🌟 特別な力が宿りました！',
+                        '🎭 秘密の呪文を覚えました！'
+                    ];
+                    
+                    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    
+                    // 一時的にメッセージを表示
+                    const messageDiv = document.createElement('div');
+                    messageDiv.textContent = randomMessage;
+                    messageDiv.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+                        color: white;
+                        padding: 20px 30px;
+                        border-radius: 25px;
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                        z-index: 10000;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+                        animation: bounceIn 0.8s ease;
+                    `;
+                    
+                    document.body.appendChild(messageDiv);
+                    
+                    setTimeout(() => {
+                        messageDiv.style.animation = 'fadeOut 0.5s ease';
+                        setTimeout(() => messageDiv.remove(), 500);
+                    }, 2000);
+                    
+                    clickCount = 0; // リセット
+                }
+            });
+        });
+        
+        // キーボードショートカット
+        document.addEventListener('keydown', function(event) {
+            // Ctrl + K で検索にフォーカス
+            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+                event.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            
+            // Escapeで検索をクリア
+            if (event.key === 'Escape') {
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput.value) {
+                    searchInput.value = '';
+                    if (typeof filterGames === 'function') {
+                        filterGames();
+                    }
+                    document.getElementById('searchClear').style.display = 'none';
+                }
+            }
+        });
+        
+        // パフォーマンス監視
+        if ('performance' in window) {
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    if (perfData) {
+                        console.log('🚀 ページ読み込み時間:', Math.round(perfData.loadEventEnd - perfData.loadEventStart), 'ms');
+                    }
+                }, 0);
+            });
+        }
+        
+        // ビューポートの変更を監視
+        if ('visualViewport' in window) {
+            window.visualViewport.addEventListener('resize', function() {
+                // スマホでキーボードが表示された時の調整
+                document.documentElement.style.setProperty('--vh', `${window.visualViewport.height * 0.01}px`);
+            });
+        }
+        
+        // タッチ操作の最適化
+        if ('ontouchstart' in window) {
+            document.addEventListener('touchstart', function() {}, { passive: true });
+            document.addEventListener('touchmove', function() {}, { passive: true });
+        }
+        
+        // エラーハンドリング
+        window.addEventListener('error', function(event) {
+            console.error('🚨 エラーが発生しました:', event.error);
+            
+            // ユーザーフレンドリーなエラーメッセージ
+            const errorDiv = document.createElement('div');
+            errorDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    bottom: 20px;
+                    right: 20px;
+                    background: #ff6b6b;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                    z-index: 10000;
+                    max-width: 300px;
+                    font-size: 0.9rem;
+                ">
+                    😅 ちょっとした問題が発生しました。<br>
+                    ページを再読み込みしてみてください。
+                    <button onclick="this.parentElement.remove()" style="
+                        background: none;
+                        border: none;
+                        color: white;
+                        float: right;
+                        cursor: pointer;
+                        font-size: 1.2rem;
+                        margin-top: -5px;
+                    ">×</button>
+                </div>
+            `;
+            document.body.appendChild(errorDiv);
+            
+            // 5秒後に自動で削除
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        });
+        
+        // オンライン/オフライン状態の監視
+        window.addEventListener('online', function() {
+            console.log('🌐 インターネットに接続されました');
+        });
+        
+        window.addEventListener('offline', function() {
+            console.log('📱 オフラインモードになりました');
+            
+            const offlineDiv = document.createElement('div');
+            offlineDiv.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background: #f39c12;
+                    color: white;
+                    text-align: center;
+                    padding: 10px;
+                    z-index: 10000;
+                    font-weight: bold;
+                ">
+                    📱 オフラインモードです。一部の機能が制限される場合があります。
+                </div>
+            `;
+            document.body.appendChild(offlineDiv);
+            
+            // オンラインになったら削除
+            const removeOfflineMessage = function() {
+                offlineDiv.remove();
+                window.removeEventListener('online', removeOfflineMessage);
+            };
+            window.addEventListener('online', removeOfflineMessage);
+        });
+    </script>
+
+    <!-- PWA Manifest -->
+    <script>
+        // PWAマニフェストを動的に生成
+        const manifest = {
+            name: "魔法のゲームポータル",
+            short_name: "ゲームポータル",
+            description: "楽しいゲームがいっぱい！小学生から大人まで遊べるゲーム集",
+            start_url: "./",
+            display: "standalone",
+            background_color: "#667eea",
+            theme_color: "#667eea",
+            orientation: "portrait",
+            icons: [
+                {
+                    src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>",
+                    sizes: "192x192",
+                    type: "image/svg+xml"
+                },
+                {
+                    src: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>",
+                    sizes: "512x512",
+                    type: "image/svg+xml"
+                }
+            ],
+            categories: ["games", "entertainment", "education"],
+            lang: "ja"
+        };
+        
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+        const manifestURL = URL.createObjectURL(manifestBlob);
+        
+        const link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = manifestURL;
+        document.head.appendChild(link);
+    </script>
+
+    <!-- アニメーション用CSS（追加） -->
+    <style>
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+        
+        /* 高コントラストモード対応 */
+        @media (prefers-contrast: high) {
+            .game-button {
+                border: 2px solid #000;
+            }
+            
+            .category-btn {
+                border: 1px solid rgba(255, 255, 255, 0.8);
+            }
+        }
+        
+        /* アニメーション無効化設定対応 */
+        @media (prefers-reduced-motion: reduce) {
+            .loading-wizard,
+            .wizard-character,
+            .title,
+            .game-icon {
+                animation: none !important;
+            }
+            
+            .game-button:hover {
+                transform: none !important;
+            }
+        }
+        
+        /* 大きなフォント設定対応 */
+        @media (prefers-font-size: large) {
+            .game-title {
+                font-size: 1.4rem;
+            }
+            
+            .game-desc {
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <!-- SEO用の構造化データ -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "魔法のゲームポータル",
+        "description": "小学生から大人まで楽しめるウェブゲーム集。アクション、クイズ、アドベンチャーなど様々なジャンルのゲームを無料で提供。",
+        "url": "",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "/?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "audience": {
+            "@type": "Audience",
+            "audienceType": "children, students, families"
+        },
+        "genre": ["games", "education", "entertainment"],
+        "inLanguage": "ja",
+        "isAccessibleForFree": true
+    }
+    </script>
 </body>
 </html>
