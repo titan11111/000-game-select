@@ -1,4 +1,4 @@
-// ゲームデータ
+// ゲームデータ（指定された2つのゲームを削除）
 const gameData = [
     { title: 'ねこキャッチ', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' },
     { title: '化合物クイズ', category: 'quiz learning', keywords: '化合物 科学 理科 クイズ', url: 'https://titan11111.github.io/2-kagoubutu_game/', icon: '🧪' },
@@ -7,7 +7,6 @@ const gameData = [
     { title: '迷路クイズRPG', category: 'adventure quiz', keywords: '迷路 RPG クイズ 冒険', url: 'https://titan11111.github.io/5-meiro_game/', icon: '🗺️' },
     { title: '色育成', category: 'adventure', keywords: '色 育成 カラー', url: 'https://titan11111.github.io/7-iro_game/', icon: '🌈' },
     { title: '酸アルバトル', category: 'battle learning', keywords: '酸 アルカリ 化学 バトル', url: 'https://titan11111.github.io/8-sannaru_game/', icon: '⚗️' },
-    { title: 'バトルゲーム2', category: 'battle', keywords: 'バトル 戦闘 進化', url: 'https://titan11111.github.io/9-battle2_game/', icon: '🛡️' },
     { title: '選択クイズ', category: 'quiz', keywords: '選択 クイズ 問題', url: 'https://titan11111.github.io/10-senntaku_game/', icon: '❓' },
     { title: '買い物ゲーム', category: 'adventure', keywords: '買い物 ショッピング お金', url: 'https://titan11111.github.io/11-kaimono_game/', icon: '🛒' },
     { title: '売買シミュレーション', category: 'adventure', keywords: '売買 商売 シミュレーション', url: 'https://titan11111.github.io/12-buysell_game/', icon: '💰' },
@@ -17,7 +16,6 @@ const gameData = [
     { title: 'ロボットランナー', category: 'action', keywords: 'ロボット ランナー 走る', url: 'https://titan11111.github.io/16-nigeru/', icon: '🤖' },
     { title: 'サイバーアクション', category: 'action', keywords: 'サイバー アクション SF', url: 'https://titan11111.github.io/17-action/', icon: '🚀' },
     { title: 'サイバー英語', category: 'quiz learning', keywords: '英語 学習 サイバー 中学', url: 'https://titan11111.github.io/18-eigo2/', icon: '🌐' },
-    { title: '落下ゲーム', category: 'action', keywords: '落下 キャッチ 反射神経', url: 'https://titan11111.github.io/19-rakka/', icon: '🏃' },
     { title: '対称ゲーム', category: 'adventure', keywords: '対称 パズル 美しい', url: 'https://titan11111.github.io/20-taisyou/', icon: '✨' },
     { title: 'おさんぽ日和', category: 'adventure', keywords: '散歩 探索 のんびり', url: 'https://titan11111.github.io/21-sanpo/', icon: '🚶' },
     { title: '給食当番リズム', category: 'action', keywords: '給食 リズム 学校', url: 'https://titan11111.github.io/23-kyuusyoku/', icon: '🍽️' },
@@ -133,7 +131,6 @@ function generateDescription(game) {
         '迷路クイズRPG': '謎を解いて迷路を攻略',
         '色育成': '美しい色の世界を育てよう',
         '酸アルバトル': '化学バトルで勝利しよう',
-        'バトルゲーム2': '進化したバトルシステム',
         '選択クイズ': '正しい答えを選ぼう',
         '買い物ゲーム': 'お得な買い物を楽しもう',
         '売買シミュレーション': '商売の腕前を試そう',
@@ -143,7 +140,6 @@ function generateDescription(game) {
         'ロボットランナー': 'ロボットと一緒に走ろう',
         'サイバーアクション': 'サイバー世界の冒険',
         'サイバー英語': '未来的な英語学習',
-        '落下ゲーム': '落ちてくるものをキャッチ',
         '対称ゲーム': '美しい対称を作り上げよう',
         'おさんぽ日和': 'のんびり散歩を楽しもう',
         '給食当番リズム': '給食タイムのリズムゲーム',
@@ -156,6 +152,9 @@ function generateDescription(game) {
     
     return descriptions[game.title] || '楽しいゲームを体験しよう！';
 }
+
+// フィルタリング用の関数をグローバルに公開（index.htmlから呼び出せるように）
+window.filterGames = filterGames;
 
 // 検索機能（改良版）
 function setupSearch() {
@@ -236,7 +235,7 @@ function setupCategoryFilter() {
     });
 }
 
-// ゲームのフィルタリング（改良版）
+// ゲームのフィルタリング（改良版：カテゴリ別ハイライト機能追加）
 function filterGames() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
     const activeCategory = document.querySelector('.category-btn.active').dataset.category;
@@ -271,8 +270,16 @@ function filterGames() {
         if (matchesSearch && matchesCategory) {
             button.classList.remove('hidden');
             visibleCount++;
+            
+            // カテゴリが選択されている時のハイライト効果
+            if (activeCategory !== 'all') {
+                button.classList.add('category-highlighted');
+            } else {
+                button.classList.remove('category-highlighted');
+            }
         } else {
             button.classList.add('hidden');
+            button.classList.remove('category-highlighted');
         }
     });
     
@@ -283,7 +290,15 @@ function filterGames() {
         noResults.style.display = 'none';
     }
     
-    gameCount.textContent = visibleCount;
+    // ゲーム数の表示を改良（カテゴリ名も表示）
+    const gameCountElement = document.getElementById('gameCount');
+    if (activeCategory === 'all') {
+        gameCountElement.innerHTML = `<span id="gameCountNumber">${visibleCount}</span> 個のゲームが見つかりました`;
+    } else {
+        const categoryName = categories[activeCategory].name;
+        const categoryIcon = categories[activeCategory].icon;
+        gameCountElement.innerHTML = `${categoryIcon} <strong>${categoryName}</strong>ゲーム: <span id="gameCountNumber">${visibleCount}</span> 個見つかりました`;
+    }
     
     // アニメーション効果
     animateVisibleButtons();
