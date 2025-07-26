@@ -249,6 +249,58 @@ body {
   animation: slideInUp 0.6s ease forwards;
 }
 
+/* カテゴリハイライト機能 */
+.game-button.category-highlighted {
+  background: linear-gradient(145deg, #e3f2fd, #bbdefb) !important;
+  border: 3px solid var(--accent-color) !important;
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3), 0 0 20px rgba(76, 175, 80, 0.2) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  animation: categoryPulse 2s ease-in-out infinite !important;
+}
+
+.game-button.category-highlighted:hover {
+  transform: translateY(-10px) scale(1.05) !important;
+  box-shadow: 0 15px 35px rgba(76, 175, 80, 0.4), 0 0 30px rgba(76, 175, 80, 0.3) !important;
+}
+
+.game-button.category-highlighted .game-icon {
+  animation: categoryIconBounce 1.5s ease-in-out infinite !important;
+  filter: drop-shadow(0 4px 8px rgba(76, 175, 80, 0.4)) !important;
+}
+
+.game-button.category-highlighted .game-title {
+  color: #2e7d32 !important;
+  font-weight: bold !important;
+  text-shadow: 0 2px 4px rgba(76, 175, 80, 0.2) !important;
+}
+
+.game-button.category-highlighted .game-desc {
+  color: #388e3c !important;
+  font-weight: 500 !important;
+}
+
+/* カテゴリハイライト用のアニメーション */
+@keyframes categoryPulse {
+  0% {
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3), 0 0 20px rgba(76, 175, 80, 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5), 0 0 30px rgba(76, 175, 80, 0.4);
+  }
+  100% {
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3), 0 0 20px rgba(76, 175, 80, 0.2);
+  }
+}
+
+@keyframes categoryIconBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.1);
+  }
+}
+
 .game-icon {
   font-size: 3rem;
   margin-bottom: 15px;
@@ -407,6 +459,15 @@ body {
   .game-desc {
       font-size: 0.85rem;
   }
+
+  /* モバイルでのカテゴリハイライト調整 */
+  .game-button.category-highlighted {
+      transform: translateY(-2px) scale(1.01) !important;
+  }
+
+  .game-button.category-highlighted:hover {
+      transform: translateY(-4px) scale(1.02) !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -454,6 +515,11 @@ body {
   .no-results h3 {
       font-size: 1.5rem;
   }
+
+  /* 極小画面でのカテゴリハイライト */
+  .game-button.category-highlighted {
+      border: 2px solid var(--accent-color) !important;
+  }
 }
 
 /* タッチデバイス向けの調整 */
@@ -470,6 +536,10 @@ body {
   .game-button:active {
       transform: scale(0.95);
       background: linear-gradient(145deg, #f0f0f0, #f8f9fa);
+  }
+
+  .game-button.category-highlighted:active {
+      transform: scale(0.98) !important;
   }
   
   .category-btn:hover {
@@ -577,6 +647,14 @@ body {
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
   }
+
+  .game-button.category-highlighted {
+      animation: none !important;
+  }
+
+  .game-button.category-highlighted .game-icon {
+      animation: none !important;
+  }
 }
 
 /* ダークモード対応 */
@@ -592,6 +670,18 @@ body {
   
   .game-desc {
       color: #a0aec0;
+  }
+
+  .game-button.category-highlighted {
+      background: linear-gradient(145deg, #1a365d, #2c5282) !important;
+  }
+
+  .game-button.category-highlighted .game-title {
+      color: #90cdf4 !important;
+  }
+
+  .game-button.category-highlighted .game-desc {
+      color: #bee3f8 !important;
   }
 }
 
