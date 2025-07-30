@@ -26,7 +26,7 @@ const gameData = [
     { title: '迷いの森', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/27-mayoimori/', icon: '🌲' },
     { title: 'クイズ３', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' },
     { title: 'シュートゲーム', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫' },
-    { title: 'シュートゲーム2', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/32-shoot2/', icon: '🎯' }
+    { title: 'シュートゲーム2', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/shoot2/', icon: '🎯' }
 ];
 
 // カテゴリー情報
