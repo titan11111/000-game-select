@@ -25,7 +25,8 @@ const gameData = [
     { title: '坊主めくり', category: 'quiz', keywords: '坊主 めくり カード 伝統', url: 'https://titan11111.github.io/26-bouzu/', icon: '🎴' },
     { title: '迷いの森', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/27-mayoimori/', icon: '🌲' },
     { title: 'クイズ３', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' },
-    { title: 'シュートゲーム', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫' }
+    { title: 'シュートゲーム', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫' },
+    { title: 'シュートゲーム2', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/32-shoot2/', icon: '🎯' }
 ];
 
 // カテゴリー情報
@@ -151,7 +152,8 @@ function generateDescription(game) {
         '坊主めくり': '伝統的なカードゲーム',
         '迷いの森': '神秘的な森を探索しよう',
         'クイズ３': '頭脳を鍛えるクイズ',
-        'シュートゲーム': '的を狙ってシュート！'
+        'シュートゲーム': '的を狙ってシュート！',
+        'シュートゲーム2': '連射で的を撃ち抜け！'
     };
     
     return descriptions[game.title] || '楽しいゲームを体験しよう！';
@@ -323,7 +325,7 @@ function animateVisibleButtons() {
 
 // 新しいゲームのハイライト（改良版）
 function highlightNewGames() {
-    const newGameTitles = ['給食当番リズム', 'ねこねこねこ', '平和な世界', '坊主めくり', '迷いの森', 'クイズ３'];
+    const newGameTitles = ['給食当番リズム', 'ねこねこねこ', '平和な世界', '坊主めくり', '迷いの森', 'クイズ３', 'シュートゲーム2'];
     
     newGameTitles.forEach(title => {
         const gameItem = gameData.find(game => game.title === title);
