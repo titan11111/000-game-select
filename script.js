@@ -24,7 +24,8 @@ const gameData = [
     { title: '平和な世界', category: 'adventure', keywords: '平和 世界 癒し', url: 'https://titan11111.github.io/25-heiwa/', icon: '🕊️' },
     { title: '坊主めくり', category: 'quiz', keywords: '坊主 めくり カード 伝統', url: 'https://titan11111.github.io/26-bouzu/', icon: '🎴' },
     { title: '迷いの森', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/27-mayoimori/', icon: '🌲' },
-    { title: 'クイズ３', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' }
+    { title: 'クイズ３', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' },
+    { title: 'シュートゲーム', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫' }
 ];
 
 // カテゴリー情報
@@ -149,7 +150,8 @@ function generateDescription(game) {
         '平和な世界': '癒しの平和な空間',
         '坊主めくり': '伝統的なカードゲーム',
         '迷いの森': '神秘的な森を探索しよう',
-        'クイズ３': '頭脳を鍛えるクイズ'
+        'クイズ３': '頭脳を鍛えるクイズ',
+        'シュートゲーム': '的を狙ってシュート！'
     };
     
     return descriptions[game.title] || '楽しいゲームを体験しよう！';
