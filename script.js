@@ -1,4 +1,4 @@
-// ゲームデータ（指定された2つのゲームを削除）
+// ゲームデータ（19-rakkaを追加）
 const gameData = [
     { title: 'ねこキャッチ', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' },
     { title: '化合物クイズ', category: 'quiz learning', keywords: '化合物 科学 理科 クイズ', url: 'https://titan11111.github.io/2-kagoubutu_game/', icon: '🧪' },
@@ -16,6 +16,7 @@ const gameData = [
     { title: 'ロボットランナー', category: 'action', keywords: 'ロボット ランナー 走る', url: 'https://titan11111.github.io/16-nigeru/', icon: '🤖' },
     { title: 'サイバーアクション', category: 'action', keywords: 'サイバー アクション SF', url: 'https://titan11111.github.io/17-action/', icon: '🚀' },
     { title: 'サイバー英語', category: 'quiz learning', keywords: '英語 学習 サイバー 中学', url: 'https://titan11111.github.io/18-eigo2/', icon: '🌐' },
+    { title: '落下ゲーム', category: 'action', keywords: '落下 キャッチ 反射神経', url: 'https://titan11111.github.io/19-rakka/', icon: '🏃' },
     { title: '対称ゲーム', category: 'adventure', keywords: '対称 パズル 美しい', url: 'https://titan11111.github.io/20-taisyou/', icon: '✨' },
     { title: 'おさんぽ日和', category: 'adventure', keywords: '散歩 探索 のんびり', url: 'https://titan11111.github.io/21-sanpo/', icon: '🚶' },
     { title: '給食当番リズム', category: 'action', keywords: '給食 リズム 学校', url: 'https://titan11111.github.io/23-kyuusyoku/', icon: '🍽️' },
@@ -140,6 +141,7 @@ function generateDescription(game) {
         'ロボットランナー': 'ロボットと一緒に走ろう',
         'サイバーアクション': 'サイバー世界の冒険',
         'サイバー英語': '未来的な英語学習',
+        '落下ゲーム': '落ちてくるものをキャッチ',
         '対称ゲーム': '美しい対称を作り上げよう',
         'おさんぽ日和': 'のんびり散歩を楽しもう',
         '給食当番リズム': '給食タイムのリズムゲーム',
