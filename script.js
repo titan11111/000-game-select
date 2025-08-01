@@ -2,12 +2,12 @@
 // セレクト時のBGM準備
 let selectBGM = null;
 window.addEventListener('DOMContentLoaded', () => {
-    selectBGM = new Audio('Entering_the_core.mp3');
+    selectBGM = new Audio('audio/Entering_the_core.mp3');
     selectBGM.volume = 0.4;
 });
 
 
-// ゲームデータ（新しいゲーム2つを追加）
+// ゲームデータ（新しいゲームを追加）
 const gameData = [
     { title: 'ねこキャッチ', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' },
     { title: '化合物クイズ', category: 'quiz learning', keywords: '化合物 科学 理科 クイズ', url: 'https://titan11111.github.io/2-kagoubutu_game/', icon: '🧪' },
@@ -33,9 +33,11 @@ const gameData = [
     { title: '坊主めくり', category: 'quiz', keywords: '坊主 めくり カード 伝統', url: 'https://titan11111.github.io/26-bouzu/', icon: '🎴' },
     { title: '迷いの森', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/27-mayoimori/', icon: '🌲' },
     { title: 'クイズ３', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' },
-    // 新しく追加する2つのゲーム
+    // 新しく追加するゲーム
     { title: 'らっか', category: 'action', keywords: '落下 アクション スピード 反射神経', url: 'https://titan11111.github.io/rakka/', icon: '🪂', isNew: true },
-    { title: 'ゆぐどら', category: 'adventure', keywords: '神秘 ファンタジー 冒険 世界樹', url: 'https://titan11111.github.io/30-yugudora/', icon: '🌳', isNew: true }
+    { title: 'ゆぐどら', category: 'adventure', keywords: '神秘 ファンタジー 冒険 世界樹', url: 'https://titan11111.github.io/30-yugudora/', icon: '🌳', isNew: true },
+    { title: 'シューティング1', category: 'action', keywords: 'シューティング 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫', isNew: true },
+    { title: 'シューティング2', category: 'action', keywords: 'シューティング 射撃 連射', url: 'https://titan11111.github.io/32-shoot2/', icon: '🎯', isNew: true }
 ];
 
 // カテゴリー情報
