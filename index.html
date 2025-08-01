@@ -103,6 +103,216 @@
         body {
             font-family: 'Nunito', 'Arial', 'Hiragino Sans', 'ヒラギノ角ゴシック', 'Yu Gothic', 'メイリオ', sans-serif;
         }
+
+        /* お気に入りボタン */
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .favorite-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            background: #ff6b6b;
+            color: white;
+            animation: heartbeat 0.6s ease;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        /* 評価星 */
+        .rating-stars {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            display: flex;
+            gap: 2px;
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 0.8rem;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .star.filled {
+            opacity: 1;
+        }
+
+        /* 人気バッジ */
+        .popular-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            box-shadow: 0 2px 8px rgba(255, 154, 158, 0.4);
+        }
+
+        /* 最近プレイしたゲーム */
+        .recent-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .recent-games {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .recent-game {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .recent-game:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 実績システム */
+        .achievements {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .achievement {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            transform: translateX(100%);
+            animation: slideInAchievement 0.5s ease forwards;
+            max-width: 250px;
+        }
+
+        .achievement-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .achievement-desc {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        @keyframes slideInAchievement {
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* プレイ回数表示 */
+        .play-count {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* フィルターバー改良 */
+        .filter-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .sort-select {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .sort-select:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* ゲーム統計 */
+        .stats-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            display: none;
+        }
+
+        .stats-panel.show {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .stats-label {
+            font-weight: 500;
+        }
+
+        .stats-value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -115,13 +325,43 @@
         </div>
     </div>
 
+    <!-- 実績表示エリア -->
+    <div class="achievements" id="achievements"></div>
+
     <div class="container">
         <!-- ヘッダー部分 -->
         <header class="header">
-            <div class="wizard-character" id="wizardCharacter" role="img" aria-label="魔法使いキャラクター"></div>
-            <h1 class="title">🎮 魔法のゲームポータル</h1>
-            <p class="subtitle">楽しいゲームがいっぱい！さあ、冒険を始めよう！</p>
+            <div class="wizard-character" id="wizardCharacter" role="img" aria-label="魔法使いキャラクター" style="background-image: url('character.png');"></div>
+            
+            
         </header>
+
+        <!-- 統計パネル -->
+        <div class="stats-panel" id="statsPanel">
+            <h3 style="text-align: center; margin-bottom: 15px; color: white;">🏆 あなたの冒険記録</h3>
+            <div class="stats-row">
+                <span class="stats-label">総プレイ回数:</span>
+                <span class="stats-value" id="totalPlaysCount">0</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">お気に入りゲーム数:</span>
+                <span class="stats-value" id="favoritesCount">0</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">探検したジャンル:</span>
+                <span class="stats-value" id="exploredCategories">0</span>
+            </div>
+            <div class="stats-row">
+                <span class="stats-label">冒険者レベル:</span>
+                <span class="stats-value" id="playerLevel">初心者</span>
+            </div>
+        </div>
+
+        <!-- 最近プレイしたゲーム -->
+        <div class="recent-section" id="recentSection" style="display: none;">
+            <h3 style="color: white; margin-bottom: 10px;">🕒 最近の冒険</h3>
+            <div class="recent-games" id="recentGames"></div>
+        </div>
 
         <!-- 検索バー -->
         <div class="search-container">
@@ -145,10 +385,27 @@
             </button>
         </div>
 
-        <!-- カテゴリフィルター -->
-        <nav class="category-filter" role="tablist" aria-label="ゲームカテゴリー">
-            <!-- JavaScriptで動的に生成されます -->
-        </nav>
+        <!-- フィルターバー -->
+        <div class="filter-bar">
+            <!-- カテゴリフィルター -->
+            <nav class="category-filter" role="tablist" aria-label="ゲームカテゴリー">
+                <!-- JavaScriptで動的に生成されます -->
+            </nav>
+            
+            <!-- 並び替え -->
+            <select class="sort-select" id="sortSelect">
+                <option value="default">デフォルト順</option>
+                <option value="popular">人気順</option>
+                <option value="recent">最近プレイした順</option>
+                <option value="favorites">お気に入り順</option>
+                <option value="alphabetical">あいうえお順</option>
+            </select>
+
+            <!-- 統計表示ボタン -->
+            <button class="category-btn" id="statsToggle" type="button">
+                📊 統計表示
+            </button>
+        </div>
 
         <!-- ゲーム数表示 -->
         <div class="game-count" id="gameCount" role="status" aria-live="polite">
@@ -240,6 +497,11 @@
                     ];
                     
                     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                    
+                    // 実績解除
+                    if (typeof showAchievement === 'function') {
+                        showAchievement('🧙‍♂️ 魔法使いマスター', '魔法使いを5回クリックしました！');
+                    }
                     
                     // 一時的にメッセージを表示
                     const messageDiv = document.createElement('div');
@@ -485,40 +747,3 @@
                 transform: none !important;
             }
         }
-        
-        /* 大きなフォント設定対応 */
-        @media (prefers-font-size: large) {
-            .game-title {
-                font-size: 1.4rem;
-            }
-            
-            .game-desc {
-                font-size: 1rem;
-            }
-        }
-    </style>
-
-    <!-- SEO用の構造化データ -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "魔法のゲームポータル",
-        "description": "小学生から大人まで楽しめるウェブゲーム集。アクション、クイズ、アドベンチャーなど様々なジャンルのゲームを無料で提供。",
-        "url": "",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "/?search={search_term_string}",
-            "query-input": "required name=search_term_string"
-        },
-        "audience": {
-            "@type": "Audience",
-            "audienceType": "children, students, families"
-        },
-        "genre": ["games", "education", "entertainment"],
-        "inLanguage": "ja",
-        "isAccessibleForFree": true
-    }
-    </script>
-</body>
-</html>
