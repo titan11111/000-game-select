@@ -1,4 +1,13 @@
-// ゲームデータ（19-rakkaを追加）
+
+// セレクト時のBGM準備
+let selectBGM = null;
+window.addEventListener('DOMContentLoaded', () => {
+    selectBGM = new Audio('Entering_the_core.mp3');
+    selectBGM.volume = 0.4;
+});
+
+
+// ゲームデータ（新しいゲーム2つを追加）
 const gameData = [
     { title: 'ねこキャッチ', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' },
     { title: '化合物クイズ', category: 'quiz learning', keywords: '化合物 科学 理科 クイズ', url: 'https://titan11111.github.io/2-kagoubutu_game/', icon: '🧪' },
@@ -16,7 +25,6 @@ const gameData = [
     { title: 'ロボットランナー', category: 'action', keywords: 'ロボット ランナー 走る', url: 'https://titan11111.github.io/16-nigeru/', icon: '🤖' },
     { title: 'サイバーアクション', category: 'action', keywords: 'サイバー アクション SF', url: 'https://titan11111.github.io/17-action/', icon: '🚀' },
     { title: 'サイバー英語', category: 'quiz learning', keywords: '英語 学習 サイバー 中学', url: 'https://titan11111.github.io/18-eigo2/', icon: '🌐' },
-    { title: '落下ゲーム', category: 'action', keywords: '落下 キャッチ 反射神経', url: 'https://titan11111.github.io/19-rakka/', icon: '🏃' },
     { title: '対称ゲーム', category: 'adventure', keywords: '対称 パズル 美しい', url: 'https://titan11111.github.io/20-taisyou/', icon: '✨' },
     { title: 'おさんぽ日和', category: 'adventure', keywords: '散歩 探索 のんびり', url: 'https://titan11111.github.io/21-sanpo/', icon: '🚶' },
     { title: '給食当番リズム', category: 'action', keywords: '給食 リズム 学校', url: 'https://titan11111.github.io/23-kyuusyoku/', icon: '🍽️' },
@@ -25,9 +33,9 @@ const gameData = [
     { title: '坊主めくり', category: 'quiz', keywords: '坊主 めくり カード 伝統', url: 'https://titan11111.github.io/26-bouzu/', icon: '🎴' },
     { title: '迷いの森', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/27-mayoimori/', icon: '🌲' },
     { title: 'クイズ３', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' },
-    { title: 'ユグドラ', category: 'adventure', keywords: 'ユグドラ RPG ファンタジー', url: 'https://titan11111.github.io/30-yugudora/', icon: '🌳' },
-    { title: 'シュートゲーム', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫' },
-    { title: 'シュートゲーム2', category: 'action', keywords: 'shoot シュート 射撃', url: 'https://titan11111.github.io/shoot2/', icon: '🎯' }
+    // 新しく追加する2つのゲーム
+    { title: 'らっか', category: 'action', keywords: '落下 アクション スピード 反射神経', url: 'https://titan11111.github.io/rakka/', icon: '🪂', isNew: true },
+    { title: 'ゆぐどら', category: 'adventure', keywords: '神秘 ファンタジー 冒険 世界樹', url: 'https://titan11111.github.io/30-yugudora/', icon: '🌳', isNew: true }
 ];
 
 // カテゴリー情報
@@ -40,9 +48,34 @@ const categories = {
     learning: { name: '学習', icon: '📚' }
 };
 
-// ゲームを開く関数（修正版）
+// ユーザーデータ（メモリに保存）
+let userData = {
+    favorites: [],
+    playHistory: [],
+    playCount: {},
+    achievements: [],
+    totalPlays: 0,
+    level: 1,
+    exploredCategories: new Set()
+};
+
+// 実績データ
+const achievements = [
+    { id: 'first_game', title: '🎮 はじめの一歩', desc: '最初のゲームをプレイしました！', condition: (data) => data.totalPlays >= 1 },
+    { id: 'game_lover', title: '💖 ゲーム好き', desc: '5つのゲームをプレイしました！', condition: (data) => data.totalPlays >= 5 },
+    { id: 'explorer', title: '🗺️ 冒険者', desc: '3つ以上のジャンルを探検しました！', condition: (data) => data.exploredCategories.size >= 3 },
+    { id: 'collector', title: '⭐ コレクター', desc: '5つのお気に入りを集めました！', condition: (data) => data.favorites.length >= 5 },
+    { id: 'master', title: '👑 ゲームマスター', desc: '15個のゲームをプレイしました！', condition: (data) => data.totalPlays >= 15 },
+    { id: 'new_game_hunter', title: '🆕 新ゲームハンター', desc: '新作ゲームをプレイしました！', condition: (data) => data.playHistory.some(url => gameData.find(g => g.url === url && g.isNew)) }
+];
+
+// ゲームを開く関数（改良版）
 function playGame(gameUrl) {
     playClickSound();
+    if (selectBGM) {
+        selectBGM.currentTime = 0;
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+    }
     
     // ボタンのアニメーション効果
     const clickedButton = document.querySelector(`[data-url="${gameUrl}"]`);
@@ -56,13 +89,146 @@ function playGame(gameUrl) {
         }, 150);
     }
     
+    // 統計を更新
+    updateUserData(gameUrl);
+    
+    // 実績チェック
+    checkAchievements();
+    
     // 少し遅延してからページを開く
     setTimeout(() => {
         window.open(gameUrl, '_blank');
     }, 200);
+}
+
+// ユーザーデータ更新
+function updateUserData(gameUrl) {
+    // プレイ履歴に追加
+    userData.playHistory.unshift(gameUrl);
+    if (userData.playHistory.length > 10) {
+        userData.playHistory = userData.playHistory.slice(0, 10);
+    }
     
-    // 統計を更新
-    updateStats(gameUrl);
+    // プレイ回数更新
+    userData.totalPlays++;
+    if (!userData.playCount[gameUrl]) {
+        userData.playCount[gameUrl] = 0;
+    }
+    userData.playCount[gameUrl]++;
+    
+    // カテゴリー探検記録
+    const game = gameData.find(g => g.url === gameUrl);
+    if (game) {
+        game.category.split(' ').forEach(cat => {
+            userData.exploredCategories.add(cat);
+        });
+    }
+    
+    // レベル計算
+    userData.level = Math.floor(userData.totalPlays / 5) + 1;
+    
+    // 統計表示を更新
+    updateStatsDisplay();
+    updateRecentGames();
+    
+    // データ保存
+    saveUserData();
+}
+
+// お気に入り機能
+function toggleFavorite(gameUrl, event) {
+    event.stopPropagation();
+    playClickSound();
+    if (selectBGM) {
+        selectBGM.currentTime = 0;
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+    }
+    
+    const index = userData.favorites.indexOf(gameUrl);
+    const button = event.target;
+    
+    if (index === -1) {
+        // お気に入りに追加
+        userData.favorites.push(gameUrl);
+        button.classList.add('active');
+        button.textContent = '❤️';
+        
+        // エフェクト
+        button.style.animation = 'heartbeat 0.6s ease';
+        setTimeout(() => button.style.animation = '', 600);
+        
+        // 実績チェック
+        checkAchievements();
+    } else {
+        // お気に入りから削除
+        userData.favorites.splice(index, 1);
+        button.classList.remove('active');
+        button.textContent = '🤍';
+    }
+    
+    saveUserData();
+    updateStatsDisplay();
+}
+
+// 実績チェック
+function checkAchievements() {
+    achievements.forEach(achievement => {
+        if (!userData.achievements.includes(achievement.id) && achievement.condition(userData)) {
+            userData.achievements.push(achievement.id);
+            showAchievement(achievement.title, achievement.desc);
+        }
+    });
+}
+
+// 実績表示
+function showAchievement(title, desc) {
+    const achievementDiv = document.createElement('div');
+    achievementDiv.className = 'achievement';
+    achievementDiv.innerHTML = `
+        <div class="achievement-title">${title}</div>
+        <div class="achievement-desc">${desc}</div>
+    `;
+    
+    document.getElementById('achievements').appendChild(achievementDiv);
+    
+    // 効果音
+    playAchievementSound();
+    
+    // 5秒後に削除
+    setTimeout(() => {
+        achievementDiv.style.animation = 'slideOutAchievement 0.5s ease forwards';
+        setTimeout(() => achievementDiv.remove(), 500);
+    }, 5000);
+}
+
+// 実績音
+function playAchievementSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // より豪華な実績音
+        const frequencies = [523, 659, 784, 1047]; // C5, E5, G5, C6
+        
+        frequencies.forEach((freq, index) => {
+            setTimeout(() => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                
+                oscillator.type = 'triangle';
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            }, index * 100);
+        });
+    } catch (error) {
+        console.log('実績音を再生できませんでした:', error);
+    }
 }
 
 // クリック音を再生する関数（改良版）
@@ -90,12 +256,44 @@ function playClickSound() {
     }
 }
 
-// ゲームボタンを動的に生成する関数
+// ゲームボタンを動的に生成する関数（改良版）
 function createGameButtons() {
     const gamesGrid = document.getElementById('gamesGrid');
     gamesGrid.innerHTML = '';
     
-    gameData.forEach((game, index) => {
+    let sortedGames = [...gameData];
+    const sortValue = document.getElementById('sortSelect')?.value || 'default';
+    
+    // ソート処理
+    switch(sortValue) {
+        case 'popular':
+            sortedGames.sort((a, b) => (userData.playCount[b.url] || 0) - (userData.playCount[a.url] || 0));
+            break;
+        case 'recent':
+            sortedGames.sort((a, b) => {
+                const aIndex = userData.playHistory.indexOf(a.url);
+                const bIndex = userData.playHistory.indexOf(b.url);
+                if (aIndex === -1 && bIndex === -1) return 0;
+                if (aIndex === -1) return 1;
+                if (bIndex === -1) return -1;
+                return aIndex - bIndex;
+            });
+            break;
+        case 'favorites':
+            sortedGames.sort((a, b) => {
+                const aFav = userData.favorites.includes(a.url);
+                const bFav = userData.favorites.includes(b.url);
+                if (aFav && !bFav) return -1;
+                if (!aFav && bFav) return 1;
+                return 0;
+            });
+            break;
+        case 'alphabetical':
+            sortedGames.sort((a, b) => a.title.localeCompare(b.title, 'ja'));
+            break;
+    }
+    
+    sortedGames.forEach((game, index) => {
         const button = document.createElement('button');
         button.className = 'game-button';
         button.setAttribute('data-url', game.url);
@@ -103,15 +301,37 @@ function createGameButtons() {
         button.setAttribute('data-keywords', game.keywords);
         button.setAttribute('tabindex', '0');
         
+        // 人気度計算
+        const playCount = userData.playCount[game.url] || 0;
+        const isPopular = playCount >= 3;
+        const isFavorite = userData.favorites.includes(game.url);
+        
         // ボタンの内容を設定
         button.innerHTML = `
+            <button class="favorite-btn ${isFavorite ? 'active' : ''}" onclick="toggleFavorite('${game.url}', event)">
+                ${isFavorite ? '❤️' : '🤍'}
+            </button>
+            
+            ${game.isNew ? '<span class="new-badge">NEW</span>' : ''}
+            ${isPopular ? '<span class="popular-badge">🔥 人気</span>' : ''}
+            
             <span class="game-icon">${game.icon}</span>
             <span class="game-title">${game.title}</span>
             <span class="game-desc">${generateDescription(game)}</span>
+            
+            <div class="rating-stars">
+                ${generateStars(calculateRating(game))}
+            </div>
+            
+            ${playCount > 0 ? `<div class="play-count">プレイ回数: ${playCount}</div>` : ''}
         `;
         
         // クリックイベントを追加
-        button.addEventListener('click', () => playGame(game.url));
+        button.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('favorite-btn')) {
+                playGame(game.url);
+            }
+        });
         
         // キーボードサポート
         button.addEventListener('keydown', (event) => {
@@ -125,7 +345,34 @@ function createGameButtons() {
     });
 }
 
-// ゲームの説明文を生成する関数
+// 星評価生成
+function generateStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        stars += `<span class="star ${i <= rating ? 'filled' : ''}">⭐</span>`;
+    }
+    return stars;
+}
+
+// 評価計算
+function calculateRating(game) {
+    const playCount = userData.playCount[game.url] || 0;
+    const isFavorite = userData.favorites.includes(game.url);
+    const isNew = game.isNew;
+    
+    let rating = 3; // 基本評価
+    
+    if (playCount >= 5) rating = 5;
+    else if (playCount >= 3) rating = 4;
+    else if (playCount >= 1) rating = 3;
+    
+    if (isFavorite) rating = Math.max(rating, 4);
+    if (isNew) rating = Math.max(rating, 4);
+    
+    return rating;
+}
+
+// ゲームの説明文を生成する関数（改良版）
 function generateDescription(game) {
     const descriptions = {
         'ねこキャッチ': 'かわいい猫をキャッチしよう！',
@@ -144,7 +391,6 @@ function generateDescription(game) {
         'ロボットランナー': 'ロボットと一緒に走ろう',
         'サイバーアクション': 'サイバー世界の冒険',
         'サイバー英語': '未来的な英語学習',
-        '落下ゲーム': '落ちてくるものをキャッチ',
         '対称ゲーム': '美しい対称を作り上げよう',
         'おさんぽ日和': 'のんびり散歩を楽しもう',
         '給食当番リズム': '給食タイムのリズムゲーム',
@@ -153,15 +399,14 @@ function generateDescription(game) {
         '坊主めくり': '伝統的なカードゲーム',
         '迷いの森': '神秘的な森を探索しよう',
         'クイズ３': '頭脳を鍛えるクイズ',
-        'ユグドラ': 'ユグドラの世界を冒険しよう',
-        'シュートゲーム': '的を狙ってシュート！',
-        'シュートゲーム2': '連射で的を撃ち抜け！'
+        'らっか': 'スリル満点の落下アクション！',
+        'ゆぐどら': '神秘の世界樹を探索しよう'
     };
     
     return descriptions[game.title] || '楽しいゲームを体験しよう！';
 }
 
-// フィルタリング用の関数をグローバルに公開（index.htmlから呼び出せるように）
+// フィルタリング用の関数をグローバルに公開
 window.filterGames = filterGames;
 
 // 検索機能（改良版）
@@ -178,20 +423,6 @@ function setupSearch() {
         
         // 検索実行
         filterGames();
-        
-        // 検索履歴の保存（セッションストレージ）
-        try {
-            if (searchTerm) {
-                let searchHistory = JSON.parse(sessionStorage.getItem('searchHistory') || '[]');
-                if (!searchHistory.includes(searchTerm)) {
-                    searchHistory.unshift(searchTerm);
-                    searchHistory = searchHistory.slice(0, 5); // 最新5件まで
-                    sessionStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-                }
-            }
-        } catch (error) {
-            console.log('検索履歴を保存できませんでした:', error);
-        }
     });
     
     // クリアボタンの動作
@@ -201,6 +432,10 @@ function setupSearch() {
         filterGames();
         searchInput.focus();
         playClickSound();
+    if (selectBGM) {
+        selectBGM.currentTime = 0;
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+    }
     });
     
     // Enterキーで最初のゲームを開く
@@ -208,7 +443,8 @@ function setupSearch() {
         if (event.key === 'Enter') {
             const firstVisibleButton = document.querySelector('.game-button:not(.hidden)');
             if (firstVisibleButton) {
-                firstVisibleButton.click();
+                const gameUrl = firstVisibleButton.getAttribute('data-url');
+                playGame(gameUrl);
             }
         }
     });
@@ -237,19 +473,36 @@ function setupCategoryFilter() {
             
             filterGames();
             playClickSound();
+    if (selectBGM) {
+        selectBGM.currentTime = 0;
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+    }
         });
         
         categoryContainer.appendChild(btn);
     });
 }
 
-// ゲームのフィルタリング（改良版：カテゴリ別ハイライト機能追加）
+// ソート機能
+function setupSortFunction() {
+    const sortSelect = document.getElementById('sortSelect');
+    sortSelect.addEventListener('change', function() {
+        playClickSound();
+    if (selectBGM) {
+        selectBGM.currentTime = 0;
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+    }
+        createGameButtons();
+        filterGames();
+    });
+}
+
+// ゲームのフィルタリング（改良版）
 function filterGames() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
     const activeCategory = document.querySelector('.category-btn.active').dataset.category;
     const gameButtons = document.querySelectorAll('.game-button');
     const noResults = document.getElementById('noResults');
-    const gameCount = document.getElementById('gameCount');
     
     let visibleCount = 0;
     
@@ -298,7 +551,7 @@ function filterGames() {
         noResults.style.display = 'none';
     }
     
-    // ゲーム数の表示を改良（カテゴリ名も表示）
+    // ゲーム数の表示を改良
     const gameCountElement = document.getElementById('gameCount');
     if (activeCategory === 'all') {
         gameCountElement.innerHTML = `<span id="gameCountNumber">${visibleCount}</span> 個のゲームが見つかりました`;
@@ -310,6 +563,96 @@ function filterGames() {
     
     // アニメーション効果
     animateVisibleButtons();
+}
+
+// 統計表示更新
+function updateStatsDisplay() {
+    document.getElementById('totalPlaysCount').textContent = userData.totalPlays;
+    document.getElementById('favoritesCount').textContent = userData.favorites.length;
+    document.getElementById('exploredCategories').textContent = userData.exploredCategories.size;
+    
+    // レベル表示
+    const levelNames = ['初心者', '新米冒険者', '冒険者', '熟練者', 'エキスパート', 'マスター', 'レジェンド'];
+    const levelIndex = Math.min(userData.level - 1, levelNames.length - 1);
+    document.getElementById('playerLevel').textContent = `${levelNames[levelIndex]} (Lv.${userData.level})`;
+}
+
+// 最近プレイしたゲーム表示
+function updateRecentGames() {
+    const recentSection = document.getElementById('recentSection');
+    const recentGames = document.getElementById('recentGames');
+    
+    if (userData.playHistory.length === 0) {
+        recentSection.style.display = 'none';
+        return;
+    }
+    
+    recentSection.style.display = 'block';
+    recentGames.innerHTML = '';
+    
+    userData.playHistory.slice(0, 5).forEach(gameUrl => {
+        const game = gameData.find(g => g.url === gameUrl);
+        if (game) {
+            const recentGame = document.createElement('div');
+            recentGame.className = 'recent-game';
+            recentGame.innerHTML = `${game.icon} ${game.title}`;
+            recentGame.addEventListener('click', () => playGame(gameUrl));
+            recentGames.appendChild(recentGame);
+        }
+    });
+}
+
+// 統計パネルの表示切り替え
+function setupStatsToggle() {
+    const statsToggle = document.getElementById('statsToggle');
+    const statsPanel = document.getElementById('statsPanel');
+    
+    statsToggle.addEventListener('click', function() {
+        playClickSound();
+    if (selectBGM) {
+        selectBGM.currentTime = 0;
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+    }
+        if (statsPanel.classList.contains('show')) {
+            statsPanel.classList.remove('show');
+            this.textContent = '📊 統計表示';
+        } else {
+            statsPanel.classList.add('show');
+            this.textContent = '📊 統計非表示';
+            updateStatsDisplay();
+        }
+    });
+}
+
+// データ保存（メモリのみ）
+function saveUserData() {
+    try {
+        // Set を Array に変換して保存
+        const dataToSave = {
+            ...userData,
+            exploredCategories: Array.from(userData.exploredCategories)
+        };
+        sessionStorage.setItem('gamePortalUserData', JSON.stringify(dataToSave));
+    } catch (error) {
+        console.log('データを保存できませんでした:', error);
+    }
+}
+
+// データ読み込み
+function loadUserData() {
+    try {
+        const saved = sessionStorage.getItem('gamePortalUserData');
+        if (saved) {
+            const parsedData = JSON.parse(saved);
+            userData = {
+                ...userData,
+                ...parsedData,
+                exploredCategories: new Set(parsedData.exploredCategories || [])
+            };
+        }
+    } catch (error) {
+        console.log('データを読み込めませんでした:', error);
+    }
 }
 
 // 表示されているボタンにアニメーション
@@ -327,125 +670,23 @@ function animateVisibleButtons() {
 
 // 新しいゲームのハイライト（改良版）
 function highlightNewGames() {
-    const newGameTitles = ['給食当番リズム', 'ねこねこねこ', '平和な世界', '坊主めくり', '迷いの森', 'クイズ３', 'ユグドラ', 'シュートゲーム2'];
+    const newGames = gameData.filter(game => game.isNew);
     
-    newGameTitles.forEach(title => {
-        const gameItem = gameData.find(game => game.title === title);
-        if (gameItem) {
-            const button = document.querySelector(`[data-url="${gameItem.url}"]`);
-            if (button) {
-                button.classList.add('highlight');
-                
-                // NEW バッジを追加
-                const newBadge = document.createElement('span');
-                newBadge.className = 'new-badge';
-                newBadge.textContent = 'NEW';
-                button.appendChild(newBadge);
-                
-                // 5秒後にハイライトを削除
-                setTimeout(() => {
-                    button.classList.remove('highlight');
-                    if (newBadge.parentNode) {
-                        newBadge.remove();
-                    }
-                }, 5000);
-            }
+    newGames.forEach(game => {
+        const button = document.querySelector(`[data-url="${game.url}"]`);
+        if (button) {
+            button.classList.add('highlight');
+            
+            // 特別な効果音
+            setTimeout(() => playClickSound(), Math.random() * 2000);
+            
+            // 10秒後にハイライトを削除
+            setTimeout(() => {
+                button.classList.remove('highlight');
+            }, 10000);
         }
     });
 }
-
-// 統計機能（改良版）
-let gameStats = {
-    totalClicks: 0,
-    gameClicks: {},
-    favoriteGame: null,
-    lastPlayed: null
-};
-
-function updateStats(gameUrl) {
-    gameStats.totalClicks++;
-    gameStats.lastPlayed = gameUrl;
-    
-    if (!gameStats.gameClicks[gameUrl]) {
-        gameStats.gameClicks[gameUrl] = 0;
-    }
-    gameStats.gameClicks[gameUrl]++;
-    
-    // 最も人気のゲームを更新
-    let maxClicks = 0;
-    for (let url in gameStats.gameClicks) {
-        if (gameStats.gameClicks[url] > maxClicks) {
-            maxClicks = gameStats.gameClicks[url];
-            gameStats.favoriteGame = url;
-        }
-    }
-    
-    // セッションストレージに保存
-    try {
-        sessionStorage.setItem('gameStats', JSON.stringify(gameStats));
-    } catch (error) {
-        console.log('統計を保存できませんでした:', error);
-    }
-}
-
-// 統計を読み込む
-function loadStats() {
-    try {
-        const saved = sessionStorage.getItem('gameStats');
-        if (saved) {
-            gameStats = { ...gameStats, ...JSON.parse(saved) };
-        }
-    } catch (error) {
-        console.log('統計を読み込めませんでした:', error);
-    }
-}
-
-// おすすめゲーム機能
-function showRecommendations() {
-    if (gameStats.favoriteGame) {
-        const favoriteGame = gameData.find(game => game.url === gameStats.favoriteGame);
-        if (favoriteGame) {
-            // 同じカテゴリのゲームを推薦
-            const similarGames = gameData.filter(game => 
-                game.category === favoriteGame.category && 
-                game.url !== favoriteGame.url
-            );
-            
-            if (similarGames.length > 0) {
-                console.log('おすすめゲーム:', similarGames[0].title);
-            }
-        }
-    }
-}
-
-// ページが読み込まれた時の処理
-document.addEventListener('DOMContentLoaded', function() {
-    // 基本機能の初期化
-    createGameButtons();
-    setupSearch();
-    setupCategoryFilter();
-    loadStats();
-    
-    // UIの改良機能
-    setupKeyboardNavigation();
-    addHapticFeedback();
-    setupLazyLoading();
-    addSwipeGestures();
-    
-    // アニメーション
-    animateButtons();
-    highlightNewGames();
-    
-    // レスポンシブ対応
-    adjustForMobile();
-    
-    // ゲーム総数を表示
-    document.getElementById('totalGames').textContent = gameData.length;
-    filterGames(); // 初期表示時にフィルタリングを適用
-    
-    // おすすめゲームの表示
-    showRecommendations();
-});
 
 // キーボードナビゲーション（改良版）
 function setupKeyboardNavigation() {
@@ -616,6 +857,149 @@ function animateButtons() {
     });
 }
 
+// おすすめゲーム機能（改良版）
+function showRecommendations() {
+    // 最もプレイしたカテゴリを分析
+    const categoryCount = {};
+    userData.playHistory.forEach(url => {
+        const game = gameData.find(g => g.url === url);
+        if (game) {
+            game.category.split(' ').forEach(cat => {
+                categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+            });
+        }
+    });
+    
+    // おすすめメッセージを表示
+    if (userData.totalPlays >= 3) {
+        const favoriteCategory = Object.keys(categoryCount).reduce((a, b) => 
+            categoryCount[a] > categoryCount[b] ? a : b, 'action');
+        
+        const categoryName = categories[favoriteCategory]?.name || 'アクション';
+        
+        console.log(`🎯 おすすめ: ${categoryName}ゲームがお好みのようですね！`);
+        
+        // 未プレイの同カテゴリゲームを推薦
+        const unplayedSameCategory = gameData.filter(game => 
+            game.category.includes(favoriteCategory) && 
+            !userData.playHistory.includes(game.url)
+        );
+        
+        if (unplayedSameCategory.length > 0) {
+            const recommended = unplayedSameCategory[0];
+            console.log(`🌟 「${recommended.title}」はいかがですか？`);
+        }
+    }
+}
+
+// 定期的な励ましメッセージ
+function showEncouragingMessages() {
+    const messages = [
+        '🎮 新しいゲームに挑戦してみませんか？',
+        '⭐ お気に入りのゲームを見つけましたか？',
+        '🏆 実績解除まであと少し！',
+        '🌟 今日も楽しくゲームしましょう！',
+        '🎯 まだ遊んでいないジャンルがありますよ！'
+    ];
+    
+    // 5分おきにメッセージ表示（デモ用は30秒）
+    if (userData.totalPlays > 0) {
+        setTimeout(() => {
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            showTemporaryMessage(randomMessage);
+            
+            // 次のメッセージをスケジュール
+            setTimeout(showEncouragingMessages, 300000); // 5分後
+        }, 30000); // 30秒後
+    }
+}
+
+// 一時的なメッセージ表示
+function showTemporaryMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(45deg, #4CAF50, #45a049);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        animation: slideUpMessage 0.5s ease;
+        max-width: 90%;
+        text-align: center;
+    `;
+    messageDiv.textContent = message;
+    
+    document.body.appendChild(messageDiv);
+    
+    // 4秒後に削除
+    setTimeout(() => {
+        messageDiv.style.animation = 'slideDownMessage 0.5s ease forwards';
+        setTimeout(() => messageDiv.remove(), 500);
+    }, 4000);
+}
+
+// ページが読み込まれた時の処理
+document.addEventListener('DOMContentLoaded', function() {
+    // データ読み込み
+    loadUserData();
+    
+    // 基本機能の初期化
+    createGameButtons();
+    setupSearch();
+    setupCategoryFilter();
+    setupSortFunction();
+    setupStatsToggle();
+    
+    // UIの改良機能
+    setupKeyboardNavigation();
+    addHapticFeedback();
+    setupLazyLoading();
+    addSwipeGestures();
+    
+    // アニメーション
+    animateButtons();
+    highlightNewGames();
+    
+    // レスポンシブ対応
+    adjustForMobile();
+    
+    // 統計表示の更新
+    updateStatsDisplay();
+    updateRecentGames();
+    
+    // ゲーム総数を表示
+    document.getElementById('totalGames').textContent = gameData.length;
+    filterGames(); // 初期表示時にフィルタリングを適用
+    
+    // おすすめゲームの表示
+    showRecommendations();
+    
+    // 励ましメッセージの開始
+    showEncouragingMessages();
+    
+    // ウェルカムメッセージ
+    if (userData.totalPlays === 0) {
+        setTimeout(() => {
+            showTemporaryMessage('🎮 ゲームポータルへようこそ！好きなゲームを選んで遊んでみてね！');
+        }, 2000);
+    } else {
+        setTimeout(() => {
+            showTemporaryMessage(`🌟 おかえりなさい！これまで${userData.totalPlays}回ゲームを楽しんでいますね！`);
+        }, 2000);
+    }
+});
+
+// グローバル関数として公開
+window.showAchievement = showAchievement;
+window.playClickSound = playClickSound;
+
 // エラーハンドリング
 window.addEventListener('error', function(event) {
     console.log('エラーが発生しました:', event.error);
@@ -630,3 +1014,60 @@ if ('performance' in window) {
         }, 0);
     });
 }
+
+// 追加のCSSアニメーション（動的に追加）
+const additionalStyles = document.createElement('style');
+additionalStyles.textContent = `
+    @keyframes slideUpMessage {
+        from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    }
+
+    @keyframes slideDownMessage {
+        from {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(-50%) translateY(20px);
+        }
+    }
+
+    @keyframes slideOutAchievement {
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    /* 新ゲームの特別なアニメーション */
+    .game-button[data-url*="rakka"] .game-icon {
+        animation: float 2s ease-in-out infinite, fallDown 3s ease-in-out infinite;
+    }
+
+    .game-button[data-url*="yugudora"] .game-icon {
+        animation: float 2s ease-in-out infinite, mysticalGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes fallDown {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        25% { transform: translateY(-8px) rotate(-5deg); }
+        50% { transform: translateY(0px) rotate(0deg); }
+        75% { transform: translateY(8px) rotate(5deg); }
+    }
+
+    @keyframes mysticalGlow {
+        0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+        25% { filter: hue-rotate(90deg) brightness(1.2); }
+        50% { filter: hue-rotate(180deg) brightness(1); }
+        75% { filter: hue-rotate(270deg) brightness(1.2); }
+    }
+`;
+document.head.appendChild(additionalStyles);
