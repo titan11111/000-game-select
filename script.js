@@ -4,6 +4,16 @@ let selectBGM = null;
 window.addEventListener('DOMContentLoaded', () => {
     selectBGM = new Audio('audio/Entering_the_core.mp3');
     selectBGM.volume = 0.4;
+    selectBGM.loop = true;
+
+    const startBGM = () => {
+        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
+        document.removeEventListener('click', startBGM);
+        document.removeEventListener('touchstart', startBGM);
+    };
+
+    document.addEventListener('click', startBGM);
+    document.addEventListener('touchstart', startBGM);
 });
 
 
@@ -74,10 +84,6 @@ const achievements = [
 // ゲームを開く関数（改良版）
 function playGame(gameUrl) {
     playClickSound();
-    if (selectBGM) {
-        selectBGM.currentTime = 0;
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-    }
     
     // ボタンのアニメーション効果
     const clickedButton = document.querySelector(`[data-url="${gameUrl}"]`);
@@ -141,10 +147,6 @@ function updateUserData(gameUrl) {
 function toggleFavorite(gameUrl, event) {
     event.stopPropagation();
     playClickSound();
-    if (selectBGM) {
-        selectBGM.currentTime = 0;
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-    }
     
     const index = userData.favorites.indexOf(gameUrl);
     const button = event.target;
@@ -434,10 +436,6 @@ function setupSearch() {
         filterGames();
         searchInput.focus();
         playClickSound();
-    if (selectBGM) {
-        selectBGM.currentTime = 0;
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-    }
     });
     
     // Enterキーで最初のゲームを開く
@@ -475,10 +473,6 @@ function setupCategoryFilter() {
             
             filterGames();
             playClickSound();
-    if (selectBGM) {
-        selectBGM.currentTime = 0;
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-    }
         });
         
         categoryContainer.appendChild(btn);
@@ -490,10 +484,6 @@ function setupSortFunction() {
     const sortSelect = document.getElementById('sortSelect');
     sortSelect.addEventListener('change', function() {
         playClickSound();
-    if (selectBGM) {
-        selectBGM.currentTime = 0;
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-    }
         createGameButtons();
         filterGames();
     });
@@ -611,10 +601,6 @@ function setupStatsToggle() {
     
     statsToggle.addEventListener('click', function() {
         playClickSound();
-    if (selectBGM) {
-        selectBGM.currentTime = 0;
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-    }
         if (statsPanel.classList.contains('show')) {
             statsPanel.classList.remove('show');
             this.textContent = '📊 統計表示';
