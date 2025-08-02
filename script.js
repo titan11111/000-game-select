@@ -1071,12 +1071,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const observer = new MutationObserver(mutations => {
             mutations.forEach(m => {
                 m.addedNodes.forEach(node => {
-                    if (node.nodeType === 1 || node.nodeType === 3) {
+                    if (node.nodeType === 1) {
                         twemoji.parse(node, parseOptions);
+                    } else if (node.nodeType === 3 && node.parentNode) {
+                        twemoji.parse(node.parentNode, parseOptions);
                     }
                 });
+                if (m.type === 'characterData' && m.target.parentNode) {
+                    twemoji.parse(m.target.parentNode, parseOptions);
+                }
             });
         });
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     }
 });
