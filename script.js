@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ゲームデータ（新しいゲームを追加）
 const gameData = [
+    { title: '学園', category: 'adventure', keywords: '学園 学校', url: 'https://titan11111.github.io/35-gakuen/', icon: '🏫', isNew: true },
     { title: '江戸ホラー', category: 'adventure', keywords: '江戸 ホラー 怖い', url: 'https://titan11111.github.io/34--edohora/', icon: '👻', isNew: true },
     { title: 'ねくび', category: 'adventure', keywords: 'ねくび 眠り 夢', url: 'https://titan11111.github.io/33--nekubi/', icon: '😴', isNew: true },
     { title: 'シューティング2', category: 'action', keywords: 'シューティング 射撃 連射', url: 'https://titan11111.github.io/32-shoot2/', icon: '🎯', isNew: true },
