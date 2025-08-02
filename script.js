@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // ゲームデータ（新しいゲームを追加）
 const gameData = [
+    { title: 'えどほら', category: 'adventure', keywords: 'えど ほら ホラー 怖い', url: 'https://titan11111.github.io/34--edohora/', icon: '👻', isNew: true },
     { title: 'ねくび', category: 'adventure', keywords: 'ねくび 眠り', url: 'https://titan11111.github.io/33--nekubi/', icon: '😴', isNew: true },
     { title: 'シューティング2', category: 'action', keywords: 'シューティング 射撃 連射', url: 'https://titan11111.github.io/32-shoot2/', icon: '🎯', isNew: true },
     { title: 'シューティング1', category: 'action', keywords: 'シューティング 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫', isNew: true },
