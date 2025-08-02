@@ -25,6 +25,12 @@ body {
   overflow-x: hidden;
 }
 
+.emoji {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.2em;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -176,9 +182,21 @@ body {
   margin-right: auto;
 }
 
+.search-container::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.2em;
+  height: 1.2em;
+  background: url('https://twemoji.maxcdn.com/v/latest/svg/1f50d.svg') no-repeat center/contain;
+  pointer-events: none;
+}
+
 .search-input {
   width: 100%;
-  padding: 18px 25px;
+  padding: 18px 25px 18px 55px;
   font-size: 1.1rem;
   border: none;
   border-radius: 50px;
