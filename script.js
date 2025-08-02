@@ -1060,3 +1060,22 @@ additionalStyles.textContent = `
     }
 `;
 document.head.appendChild(additionalStyles);
+
+// Emoji to SVG conversion
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.twemoji) {
+        const parseOptions = { folder: 'svg', ext: '.svg', className: 'emoji' };
+        twemoji.parse(document.body, parseOptions);
+
+        const observer = new MutationObserver(mutations => {
+            mutations.forEach(m => {
+                m.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 || node.nodeType === 3) {
+                        twemoji.parse(node, parseOptions);
+                    }
+                });
+            });
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+});
