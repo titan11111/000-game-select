@@ -3,7 +3,7 @@
 let selectBGM = null;
 window.addEventListener('DOMContentLoaded', () => {
     selectBGM = new Audio('audio/Entering_the_core.mp3');
-    selectBGM.volume = 0.4;
+    selectBGM.volume = 0.8;
     selectBGM.loop = true;
 
     const startBGM = () => {
