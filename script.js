@@ -1,20 +1,6 @@
 
-// セレクト時のBGM準備
-let selectBGM = null;
-window.addEventListener('DOMContentLoaded', () => {
-    selectBGM = new Audio('audio/Entering_the_core.mp3');
-    selectBGM.volume = 0.8;
-    selectBGM.loop = true;
-
-    const startBGM = () => {
-        selectBGM.play().catch(err => console.log('BGM再生失敗:', err));
-        document.removeEventListener('click', startBGM);
-        document.removeEventListener('touchstart', startBGM);
-    };
-
-    document.addEventListener('click', startBGM);
-    document.addEventListener('touchstart', startBGM);
-});
+// BGMを無効化し、効果音のみ再生する設定
+// 以前はここで選択画面のBGMを再生していましたが、現在は無効化しています。
 
 
 // ゲームデータ（新しいゲームを追加）
