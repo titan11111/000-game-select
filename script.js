@@ -5,6 +5,8 @@
 
 // ゲームデータ（新しいゲームを追加）
 const gameData = [
+    { title: 'シューティング3', category: 'action', keywords: 'シューティング 射撃 弾幕', url: 'https://titan11111.github.io/38-shoot3/', icon: '🚀', isNew: true },
+    { title: 'RPG', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/37-RPG/', icon: '🧙‍♂️', isNew: true },
     { title: '学園', category: 'adventure', keywords: '学園 学校', url: 'https://titan11111.github.io/35-gakuen/', icon: '🏫', isNew: true },
     { title: 'デモンキャッスル', category: 'adventure', keywords: 'デモン キャッスル 魔物', url: 'https://titan11111.github.io/34-demon_castle/', icon: '🏰', isNew: true },
     { title: 'ねくび', category: 'adventure', keywords: 'ねくび 眠り 夢', url: 'https://titan11111.github.io/33--nekubi/', icon: '😴', isNew: true },
