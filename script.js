@@ -88,12 +88,6 @@ const achievements = [
 
 // ゲームを開く関数（改良版）
 function playGame(gameUrl) {
-    // セレクトBGMを停止
-    if (selectBGM && !selectBGM.paused) {
-        selectBGM.pause();
-        selectBGM.currentTime = 0;
-    }
-
     playClickSound();
     
     // ボタンのアニメーション効果
