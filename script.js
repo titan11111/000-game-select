@@ -5,6 +5,7 @@
 
 // ゲームデータ（新しいゲームを追加）
 const gameData = [
+    { title: 'ミタ：未知の冒険', category: 'adventure', keywords: 'ミタ 冒険', url: 'https://titan11111.github.io/46-mita/', icon: '👀', isNew: true },
     { title: '魔塔：闇の塔の試練', category: 'adventure', keywords: '魔塔 塔 ダンジョン', url: 'https://titan11111.github.io/45-matou/', icon: '🗼', isNew: true },
     { title: 'ねくび2：夢幻の冒険', category: 'adventure', keywords: 'ねくび 眠り 夢', url: 'https://titan11111.github.io/44-nekubi2/', icon: '😴', isNew: true },
     { title: '格闘チャンピオン2：最強の挑戦者', category: 'battle action', keywords: '格闘 バトル 対戦', url: 'https://titan11111.github.io/43-kakuge2/', icon: '🥊', isNew: true },
