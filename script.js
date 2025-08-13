@@ -5,6 +5,9 @@
 
 // ゲームデータ（新しいゲームを追加）
 const gameData = [
+    { title: 'クエスト：冒険の始まり', category: 'adventure', keywords: 'クエスト 冒険 RPG', url: 'https://titan11111.github.io/50-quest/', icon: '🗡️', isNew: true },
+    { title: 'マイクラ：ブロックの世界', category: 'adventure', keywords: 'マイクラ Minecraft ブロック', url: 'https://titan11111.github.io/49-maikura/', icon: '⛏️', isNew: true },
+    { title: 'アクションヒーロー2：激闘の再来', category: 'action', keywords: 'アクション 戦闘 反射神経', url: 'https://titan11111.github.io/48-action2/', icon: '⚡', isNew: true },
     { title: '電車冒険：線路の旅', category: 'adventure', keywords: '電車 列車 乗り物', url: 'https://titan11111.github.io/47-dennsya/', icon: '🚆', isNew: true },
     { title: 'ミタ：未知の冒険', category: 'adventure', keywords: 'ミタ 冒険', url: 'https://titan11111.github.io/46-mita/', icon: '👀', isNew: true },
     { title: '魔塔：闇の塔の試練', category: 'adventure', keywords: '魔塔 塔 ダンジョン', url: 'https://titan11111.github.io/45-matou/', icon: '🗼', isNew: true },
