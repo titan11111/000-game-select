@@ -1,5 +1,7 @@
 // ゲームデータ
 const gameData = [
+    { title: 'テトリス：落ち物パズル', category: 'action', keywords: 'テトリス パズル ブロック', url: 'https://titan11111.github.io/50-tetoris/', icon: '🧩', isNew: true },
+    { title: 'ルーレット：運命の回転', category: 'quiz', keywords: 'ルーレット 運 試し', url: 'https://titan11111.github.io/51-rulet/', icon: '🎰', isNew: true },
     { title: 'クエスト：冒険の始まり', category: 'adventure', keywords: 'クエスト 冒険 RPG', url: 'https://titan11111.github.io/50-quest/', icon: '🗡️', isNew: true },
     { title: 'マイクラ：ブロックの世界', category: 'adventure', keywords: 'マイクラ Minecraft ブロック', url: 'https://titan11111.github.io/49-maikura/', icon: '⛏️', isNew: true },
     { title: 'アクションヒーロー2：激闘の再来', category: 'action', keywords: 'アクション 戦闘 反射神経', url: 'https://titan11111.github.io/48-action2/', icon: '⚡', isNew: true },
