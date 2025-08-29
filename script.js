@@ -1,5 +1,6 @@
 // ゲームデータ
 const gameData = [
+    { title: 'インベーダー：宇宙防衛戦', category: 'action', keywords: 'インベーダー シューティング 宇宙', url: 'https://titan11111.github.io/57-inveder/', icon: '👾', isNew: true },
     { title: 'ブロック：積み上げパズル', category: 'action', keywords: 'ブロック パズル', url: 'https://titan11111.github.io/55-block/', icon: '🧱', isNew: true },
     { title: 'RPG：勇者の帰還', category: 'adventure', keywords: 'RPG ファンタジー 冒険 勇者', url: 'https://titan11111.github.io/54-RPG-/', icon: '🛡️', isNew: true },
     { title: 'スキャンファイターズ：超反応バトル', category: 'battle action', keywords: 'スキャン ファイター バトル', url: 'https://titan11111.github.io/53-SCAN-FIGHTERS/', icon: '🛰️', isNew: true },
