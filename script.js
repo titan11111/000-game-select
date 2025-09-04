@@ -6,6 +6,7 @@ const gameData = [
     { title: 'ブロック：積み上げパズル', category: 'action', keywords: 'ブロック パズル', url: 'https://titan11111.github.io/55-block/', icon: '🧱', isNew: true },
     { title: 'RPG：勇者の帰還', category: 'adventure', keywords: 'RPG ファンタジー 冒険 勇者', url: 'https://titan11111.github.io/54-RPG-/', icon: '🛡️', isNew: true },
     { title: 'スキャンファイターズ：超反応バトル', category: 'battle action', keywords: 'スキャン ファイター バトル', url: 'https://titan11111.github.io/53-SCAN-FIGHTERS/', icon: '🛰️', isNew: true },
+    { title: 'アクションヒーロー3：最終決戦', category: 'action', keywords: 'アクション ヒーロー 戦闘', url: 'https://titan11111.github.io/52-action3/', icon: '⚡', isNew: true },
     { title: 'アクションジャンプ：天空への挑戦', category: 'action', keywords: 'アクション ジャンプ', url: 'https://titan11111.github.io/50-action-jamp/', icon: '🏃', isNew: true },
     { title: 'テトリス：落ち物パズル', category: 'action', keywords: 'テトリス パズル ブロック', url: 'https://titan11111.github.io/50-tetoris/', icon: '🧩', isNew: true },
     { title: 'ルーレット：運命の回転', category: 'quiz', keywords: 'ルーレット 運 試し', url: 'https://titan11111.github.io/51-rulet/', icon: '🎰', isNew: true },
