@@ -1,83 +1,563 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITAN GAMES - ゲームポータル</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TITAN GAMES - ゲームポータル（統合版・累計プレイ対応）</title>
+  <style>
+    /* ====== style.css 統合（要点＋調整） ====== */
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:linear-gradient(135deg,#0a0a0a,#1a1a2e,#16213e);
+      color:#fff;min-height:100vh;overflow-x:hidden;
+    }
+    .header{
+      background:rgba(0,0,0,.8);backdrop-filter:blur(10px);
+      border-bottom:2px solid #0ff;position:sticky;top:0;z-index:100;
+      box-shadow:0 4px 20px rgba(0,255,255,.3);
+    }
+    .header-content{
+      max-width:1200px;margin:0 auto;padding:1rem 2rem;display:flex;
+      justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+    }
+    .logo{
+      font-size:2rem;font-weight:bold;
+      background:linear-gradient(45deg,#0ff,#f0f,#ff0);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      text-shadow:0 0 20px rgba(0,255,255,.5);animation:glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow{from{filter:drop-shadow(0 0 5px #0ff)}to{filter:drop-shadow(0 0 15px #0ff)}}
+    .search-container{display:flex;gap:.5rem;align-items:center}
+    .search-input{
+      padding:.8rem 1rem;border:2px solid #0ff;border-radius:25px;background:rgba(0,0,0,.7);
+      color:#fff;font-size:1rem;min-width:250px;transition:.3s;
+    }
+    .search-input:focus{outline:none;border-color:#f0f;box-shadow:0 0 15px rgba(255,0,255,.5);transform:scale(1.02)}
+    .search-btn{
+      padding:.8rem 1rem;background:linear-gradient(45deg,#0ff,#f0f);border:none;border-radius:50%;
+      color:#fff;cursor:pointer;transition:.3s;font-size:1rem;
+    }
+    .search-btn:hover{transform:scale(1.1) rotate(360deg);box-shadow:0 0 20px rgba(0,255,255,.7)}
+
+    .main{max-width:1200px;margin:0 auto;padding:2rem}
+    .section-title{
+      font-size:2rem;margin-bottom:1.5rem;text-align:center;
+      background:linear-gradient(45deg,#0ff,#fff);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+
+    /* フィルター（セレクトボタン2列） */
+    .filter-section{margin-bottom:3rem}
+    .filter-buttons{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(160px,1fr));
+      gap:1rem;max-width:560px;margin:0 auto;justify-items:stretch;
+    }
+    .filter-btn{
+      padding:.8rem 1.5rem;background:rgba(0,0,0,.5);border:2px solid #0ff;border-radius:25px;
+      color:#fff;cursor:pointer;transition:.3s;font-size:1rem;font-weight:bold;
+    }
+    .filter-btn:hover,.filter-btn.active{
+      background:linear-gradient(45deg,#0ff,#f0f);
+      transform:translateY(-2px);box-shadow:0 5px 15px rgba(0,255,255,.4);
+    }
+
+    /* 統計 */
+    .stats-section{margin-bottom:3rem}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+    .stat-card{
+      background:rgba(0,0,0,.6);border:2px solid #0ff;border-radius:15px;padding:2rem;text-align:center;
+      transition:.3s;position:relative;overflow:hidden;
+    }
+    .stat-card::before{
+      content:'';position:absolute;inset:-2px;background:linear-gradient(45deg,#0ff,#f0f,#ff0,#0ff);
+      border-radius:15px;z-index:-1;animation:borderRotate 3s linear infinite;opacity:0;transition:.3s;
+    }
+    .stat-card:hover::before{opacity:1}
+    @keyframes borderRotate{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+    .stat-card:hover{transform:translateY(-5px);box-shadow:0 10px 25px rgba(0,255,255,.3)}
+    .stat-number{font-size:3rem;font-weight:bold;color:#0ff;margin-bottom:.5rem;animation:countUp 1s ease-out}
+    @keyframes countUp{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:scale(1)}}
+    .stat-label{font-size:1.1rem;color:#ccc}
+
+    /* ゲーム一覧 */
+    .games-section{margin-bottom:3rem}
+    .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2rem}
+    .game-card{
+      background:rgba(0,0,0,.7);border:2px solid #333;border-radius:15px;padding:1.5rem;transition:.3s;
+      position:relative;overflow:hidden;cursor:pointer;opacity:0;animation:slideInUp .6s ease-out forwards;
+    }
+    .game-card::before{
+      content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(0,255,255,.2),transparent);transition:left .5s ease;
+    }
+    .game-card:hover::before{left:100%}
+    .game-card:hover{border-color:#0ff;transform:translateY(-5px);box-shadow:0 10px 25px rgba(0,255,255,.2)}
+    .game-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+    .game-icon{font-size:2.5rem;animation:bounce 2s ease-in-out infinite}
+    @keyframes bounce{0%,20%,50%,80%,100%{transform:translateY(0)}40%{transform:translateY(-10px)}60%{transform:translateY(-5px)}}
+    .game-title{font-size:1.3rem;font-weight:bold;color:#fff;flex:1}
+    .new-badge{background:linear-gradient(45deg,#f06,#f60);color:#fff;padding:.3rem .8rem;border-radius:15px;font-size:.8rem;font-weight:bold;animation:pulse 1.5s ease-in-out infinite}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+    .game-keywords{background:rgba(0,255,255,.1);color:#0ff;padding:.5rem 1rem;border-radius:20px;font-size:.9rem;margin-bottom:0.6rem;border:1px solid rgba(0,255,255,.3)}
+
+    /* ★ 累計プレイ表示 */
+    .play-count{
+      margin:0 0 1rem;color:#cccccc;font-size:.95rem
+    }
+    .play-count .count-pill{
+      display:inline-block;border:1px solid rgba(0,255,255,.4);border-radius:12px;padding:.1rem .6rem;margin-left:.35rem;
+      background:rgba(0,0,0,.35);color:#0ff;font-weight:bold
+    }
+
+    .play-btn{
+      width:100%;padding:1rem;background:linear-gradient(45deg,#0ff,#f0f);border:none;border-radius:25px;
+      color:#fff;font-size:1.1rem;font-weight:bold;cursor:pointer;transition:.3s;
+    }
+    .play-btn:hover{transform:scale(1.05);box-shadow:0 5px 15px rgba(0,255,255,.4)}
+    @keyframes slideInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ページネーション */
+    .pagination-section{
+      display:flex;justify-content:center;align-items:center;gap:1rem;margin:3rem 0;flex-wrap:wrap;
+    }
+    .page-btn{
+      padding:.8rem 1.5rem;background:rgba(0,0,0,.7);border:2px solid #0ff;border-radius:25px;color:#fff;
+      cursor:pointer;transition:.3s;font-size:1rem;
+    }
+    .page-btn:hover:not(:disabled){background:linear-gradient(45deg,#0ff,#f0f);transform:translateY(-2px)}
+    .page-btn:disabled{opacity:.5;cursor:not-allowed}
+    .page-numbers{display:flex;gap:.5rem;flex-wrap:wrap}
+    .page-number{
+      width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.7);
+      border:2px solid #333;border-radius:50%;color:#fff;cursor:pointer;transition:.3s;
+    }
+    .page-number:hover,.page-number.active{border-color:#0ff;background:linear-gradient(45deg,#0ff,#f0f);transform:scale(1.1)}
+
+    .footer{background:rgba(0,0,0,.9);text-align:center;padding:2rem;border-top:2px solid #0ff;margin-top:3rem}
+
+    /* ローディング */
+    .loading{
+      position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:1000;transition:opacity .5s ease;
+    }
+    .loading.hidden{opacity:0;pointer-events:none}
+    .loading-spinner{width:60px;height:60px;border:4px solid rgba(0,255,255,.3);border-top:4px solid #0ff;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:1rem}
+    @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
+
+    /* レスポンシブ */
+    @media (max-width:768px){
+      .header-content{flex-direction:column;gap:1rem}
+      .search-input{min-width:200px}
+      .main{padding:1rem}
+      .games-grid{grid-template-columns:1fr;gap:1.5rem}
+      .stats-grid{grid-template-columns:1fr}
+      .logo{font-size:1.5rem}
+      .section-title{font-size:1.5rem}
+    }
+    @media (max-width:480px){
+      .game-card{padding:1rem}
+      .game-title{font-size:1.1rem}
+      .game-icon{font-size:2rem}
+      .search-input{min-width:150px;font-size:.9rem}
+    }
+  </style>
 </head>
 <body>
-    <!-- ヘッダー -->
-    <header class="header">
-        <div class="header-content">
-            <h1 class="logo">🎮 TITAN GAMES</h1>
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="ゲームを検索..." class="search-input">
-                <button id="searchBtn" class="search-btn">🔍</button>
-            </div>
-        </div>
-    </header>
-
-    <!-- メインコンテンツ -->
-    <main class="main">
-        <!-- フィルターセクション -->
-        <section class="filter-section">
-            <h2 class="section-title">カテゴリー</h2>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-category="all">すべて</button>
-                <button class="filter-btn" data-category="action">アクション</button>
-                <button class="filter-btn" data-category="adventure">アドベンチャー</button>
-                <button class="filter-btn" data-category="battle">バトル</button>
-                <button class="filter-btn" data-category="quiz">クイズ</button>
-                <button class="filter-btn" data-category="learning">学習</button>
-            </div>
-        </section>
-
-        <!-- ゲーム統計 -->
-        <section class="stats-section">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalGames">0</div>
-                    <div class="stat-label">総ゲーム数</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="newGames">0</div>
-                    <div class="stat-label">新作ゲーム</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="categories">0</div>
-                    <div class="stat-label">カテゴリー</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ゲーム一覧 -->
-        <section class="games-section">
-            <h2 class="section-title">ゲーム一覧 <span id="gameCount">(0)</span></h2>
-            <div id="gamesList" class="games-grid">
-                <!-- ゲームカードがここに動的に追加されます -->
-            </div>
-        </section>
-
-        <!-- ページネーション -->
-        <section class="pagination-section">
-            <button id="prevBtn" class="page-btn">← 前へ</button>
-            <div id="pageNumbers" class="page-numbers"></div>
-            <button id="nextBtn" class="page-btn">次へ →</button>
-        </section>
-    </main>
-
-    <!-- フッター -->
-    <footer class="footer">
-        <p>&copy; 2025 TITAN GAMES. すべてのゲームを楽しもう！</p>
-    </footer>
-
-    <!-- ローディング画面 -->
-    <div id="loading" class="loading">
-        <div class="loading-spinner"></div>
-        <p>ゲームを読み込み中...</p>
+  <!-- ヘッダー -->
+  <header class="header">
+    <div class="header-content">
+      <h1 class="logo">🎮 TITAN GAMES</h1>
+      <div class="search-container">
+        <input id="searchInput" type="text" placeholder="ゲームを検索..." class="search-input" />
+        <button id="searchBtn" class="search-btn">🔍</button>
+      </div>
     </div>
+  </header>
 
-    <script src="script.js"></script>
+  <main class="main">
+    <!-- フィルター -->
+    <section class="filter-section">
+      <h2 class="section-title">カテゴリー</h2>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-category="all">すべて</button>
+        <button class="filter-btn" data-category="action">アクション</button>
+        <button class="filter-btn" data-category="adventure">アドベンチャー</button>
+        <button class="filter-btn" data-category="battle">バトル</button>
+        <button class="filter-btn" data-category="quiz">クイズ</button>
+        <button class="filter-btn" data-category="learning">学習</button>
+      </div>
+    </section>
+
+    <!-- 統計 -->
+    <section class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div id="totalGames" class="stat-number">0</div>
+          <div class="stat-label">総ゲーム数</div>
+        </div>
+        <div class="stat-card">
+          <div id="newGames" class="stat-number">0</div>
+          <div class="stat-label">新作ゲーム</div>
+        </div>
+        <div class="stat-card">
+          <div id="categories" class="stat-number">0</div>
+          <div class="stat-label">カテゴリー</div>
+        </div>
+        <!-- ★ 追加：総プレイ回数（累計・保存） -->
+        <div class="stat-card">
+          <div id="totalPlays" class="stat-number">0</div>
+          <div class="stat-label">総プレイ回数（累計）</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 一覧 -->
+    <section class="games-section">
+      <h2 class="section-title">ゲーム一覧 <span id="gameCount">(0)</span></h2>
+      <div id="gamesList" class="games-grid"></div>
+    </section>
+
+    <!-- ページネーション -->
+    <section class="pagination-section">
+      <button id="prevBtn" class="page-btn">← 前へ</button>
+      <div id="pageNumbers" class="page-numbers"></div>
+      <button id="nextBtn" class="page-btn">次へ →</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 TITAN GAMES. すべてのゲームを楽しもう！</p>
+  </footer>
+
+  <!-- ローディング -->
+  <div id="loading" class="loading">
+    <div class="loading-spinner"></div>
+    <p>ゲームを読み込み中...</p>
+  </div>
+
+  <script>
+    // ====== script.js 統合（機能維持＋シャッフル対応＋★累計プレイ保存） ======
+
+    // ★ 追加：ローカルストレージキー
+    const STORAGE_KEY = 'titanPlayCounts_v1';
+
+    // ★ 追加：保存・読込ヘルパ
+    function loadPlayCounts(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      }catch(e){
+        console.warn('playCounts load failed', e);
+        return {};
+      }
+    }
+    function savePlayCounts(obj){
+      try{
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+      }catch(e){
+        console.warn('playCounts save failed', e);
+      }
+    }
+
+    // ★ 追加：カウント操作
+    let playCounts = loadPlayCounts(); // { [gameUrl]: number }
+    function getCount(url){ return playCounts[url] || 0; }
+    function addCount(url){
+      playCounts[url] = (playCounts[url] || 0) + 1;
+      savePlayCounts(playCounts);
+    }
+    function sumAllCounts(){
+      return Object.values(playCounts).reduce((a,b)=>a+(typeof b==='number'?b:0),0);
+    }
+
+    // ゲームデータ（★ 44-action-RPG を追加）
+    const gameData = [
+      { title:'ARPG（剣・爆弾・モバイル対応）', category:'action adventure', keywords:'ARPG アクション RPG 剣 爆弾 モバイル', url:'https://titan11111.github.io/44-action-RPG/', icon:'🗡️', isNew:true },
+
+      { title:'RPG4：新たなる冒険', category:'adventure', keywords:'RPG ファンタジー 冒険 4', url:'https://titan11111.github.io/62-RPG4/', icon:'🛡️', isNew:true },
+      { title:'リズムゲーム：ビートチャレンジ', category:'action', keywords:'リズム 音楽 ビート', url:'https://titan11111.github.io/61-rizme/', icon:'🎵', isNew:true },
+      { title:'インベーダーブロック：宇宙の攻防', category:'action', keywords:'インベーダー ブロック シューティング パズル', url:'https://titan11111.github.io/59-inveder-block/', icon:'👾', isNew:true },
+      { title:'インベーダー：宇宙防衛戦', category:'action', keywords:'インベーダー シューティング 宇宙', url:'https://titan11111.github.io/57-inveder/', icon:'👾', isNew:true },
+      { title:'ブロック：積み上げパズル', category:'action', keywords:'ブロック パズル', url:'https://titan11111.github.io/55-block/', icon:'🧱', isNew:true },
+      { title:'RPG：勇者の帰還', category:'adventure', keywords:'RPG ファンタジー 冒険 勇者', url:'https://titan11111.github.io/54-RPG-/', icon:'🛡️', isNew:true },
+      { title:'スキャンファイターズ：超反応バトル', category:'battle action', keywords:'スキャン ファイター バトル', url:'https://titan11111.github.io/53-SCAN-FIGHTERS/', icon:'🛰️', isNew:true },
+      { title:'アクションヒーロー3：最終決戦', category:'action', keywords:'アクション ヒーロー 戦闘', url:'https://titan11111.github.io/52-action3/', icon:'⚡', isNew:true },
+      { title:'アクションジャンプ：天空への挑戦', category:'action', keywords:'アクション ジャンプ', url:'https://titan11111.github.io/50-action-jamp/', icon:'🏃', isNew:true },
+      { title:'テトリス：落ち物パズル', category:'action', keywords:'テトリス パズル ブロック', url:'https://titan11111.github.io/50-tetoris/', icon:'🧩', isNew:true },
+      { title:'ルーレット：運命の回転', category:'quiz', keywords:'ルーレット 運 試し', url:'https://titan11111.github.io/51-rulet/', icon:'🎰', isNew:true },
+      { title:'クエスト：冒険の始まり', category:'adventure', keywords:'クエスト 冒険 RPG', url:'https://titan11111.github.io/50-quest/', icon:'🗡️', isNew:true },
+      { title:'マイクラ：ブロックの世界', category:'adventure', keywords:'マイクラ Minecraft ブロック', url:'https://titan11111.github.io/49-maikura/', icon:'⛏️', isNew:true },
+      { title:'アクションヒーロー2：激闘の再来', category:'action', keywords:'アクション 戦闘 反射神経', url:'https://titan11111.github.io/48-action2/', icon:'⚡', isNew:true },
+      { title:'電車冒険：線路の旅', category:'adventure', keywords:'電車 列車 乗り物', url:'https://titan11111.github.io/47-dennsya/', icon:'🚆', isNew:true },
+      { title:'ミタ：未知の冒険', category:'adventure', keywords:'ミタ 冒険', url:'https://titan11111.github.io/46-mita/', icon:'👀', isNew:true },
+      { title:'魔塔：闇の塔の試練', category:'adventure', keywords:'魔塔 塔 ダンジョン', url:'https://titan11111.github.io/45-matou/', icon:'🗼', isNew:true },
+      { title:'ねくび2：夢幻の冒険', category:'adventure', keywords:'ねくび 眠り 夢', url:'https://titan11111.github.io/44-nekubi2/', icon:'😴', isNew:true },
+      { title:'格闘チャンピオン2：最強の挑戦者', category:'battle action', keywords:'格闘 バトル 対戦', url:'https://titan11111.github.io/43-kakuge2/', icon:'🥊', isNew:true },
+      { title:'シューティング4：天空の激戦', category:'action', keywords:'シューティング 宇宙 弾幕', url:'https://titan11111.github.io/42-syutinngu/', icon:'🚀', isNew:true },
+      { title:'ホラー脱出2：闇夜の再来', category:'adventure', keywords:'ホラー 怖い 脱出', url:'https://titan11111.github.io/41-horaa2/', icon:'👻', isNew:true },
+      { title:'格闘チャンピオン', category:'battle action', keywords:'格闘 バトル 対戦', url:'https://titan11111.github.io/40-kakuge/', icon:'🥊', isNew:true },
+      { title:'ホラー脱出', category:'adventure', keywords:'ホラー 怖い 脱出', url:'https://titan11111.github.io/39-horaa/', icon:'👻', isNew:true },
+      { title:'シューティング3：星海の大決戦', category:'action', keywords:'シューティング 宇宙 弾幕', url:'https://titan11111.github.io/38-shoot3/', icon:'🚀', isNew:true },
+      { title:'冒険RPG：伝説の始まり', category:'adventure', keywords:'RPG ファンタジー 冒険', url:'https://titan11111.github.io/37-RPG/', icon:'🧙‍♂️', isNew:true },
+      { title:'学園アドベンチャー：ひみつの放課後', category:'adventure', keywords:'学園 学校', url:'https://titan11111.github.io/35-gakuen/', icon:'🏫', isNew:true },
+      { title:'デモンキャッスル：魔城の試練', category:'adventure', keywords:'デモン キャッスル 魔物', url:'https://titan11111.github.io/34-demon_castle/', icon:'🏰', isNew:true },
+      { title:'ねくび：夢みる旅人', category:'adventure', keywords:'ねくび 眠り 夢', url:'https://titan11111.github.io/33--nekubi/', icon:'😴', isNew:true },
+      { title:'シューティング2：炎の逆襲', category:'action', keywords:'シューティング 射撃 連射', url:'https://titan11111.github.io/32-shoot2/', icon:'🎯', isNew:true },
+      { title:'シューティング1：初めての戦場', category:'action', keywords:'シューティング 射撃', url:'https://titan11111.github.io/31-shoot/', icon:'🔫', isNew:true },
+      { title:'世界樹探検：伝説の樹を求めて', category:'adventure', keywords:'神秘 ファンタジー 冒険 世界樹 探検', url:'https://titan11111.github.io/30-yugudora/', icon:'🌳', isNew:true },
+      { title:'クイズ4：超難問チャレンジ', category:'quiz', keywords:'クイズ 問題 頭脳', url:'https://titan11111.github.io/titan11111-quiz4/', icon:'🧠', isNew:true },
+      { title:'クイズ3：ひらめき勝負', category:'quiz', keywords:'クイズ 問題 頭脳', url:'https://titan11111.github.io/28-quiz3/', icon:'🧠' },
+      { title:'迷いの森：ささやく木々の誘い', category:'adventure', keywords:'森 迷い 神秘 探索', url:'https://titan11111.github.io/27-mayoimori/', icon:'🌲' },
+      { title:'坊主めくり：運試しバトル', category:'quiz', keywords:'坊主 めくり カード 伝統', url:'https://titan11111.github.io/26-bouzu/', icon:'🎴' },
+      { title:'平和な世界：癒しのオアシス', category:'adventure', keywords:'平和 世界 癒し', url:'https://titan11111.github.io/25-heiwa/', icon:'🕊️' },
+      { title:'ねこねこねこ：にゃんこパレード', category:'action', keywords:'ねこ 猫 たくさん', url:'https://titan11111.github.io/24-nekonekoneko/', icon:'😸' },
+      { title:'給食当番リズム：キッチンビート', category:'action', keywords:'給食 リズム 学校', url:'https://titan11111.github.io/23-kyuusyoku/', icon:'🍽️' },
+      { title:'おさんぽ日和：てくてく冒険', category:'adventure', keywords:'散歩 探索 のんびり', url:'https://titan11111.github.io/21-sanpo/', icon:'🚶' },
+      { title:'対称パズル：ミラーの魔法', category:'adventure', keywords:'対称 パズル 美しい', url:'https://titan11111.github.io/20-taisyou/', icon:'✨' },
+      { title:'らっか：スカイドロップ', category:'action', keywords:'落下 アクション スピード 反射神経', url:'https://titan11111.github.io/19-rakka/', icon:'🪂', isNew:true },
+      { title:'サイバー英語：ネオンの学習', category:'quiz learning', keywords:'英語 学習 サイバー 中学', url:'https://titan11111.github.io/18-eigo2/', icon:'🌐' },
+      { title:'電脳アクション：デジタルウォーズ', category:'action', keywords:'電脳 サイバー アクション SF', url:'https://titan11111.github.io/17-action/', icon:'🚀' },
+      { title:'ロボットランナー：メカダッシュ', category:'action', keywords:'ロボット ランナー 走る', url:'https://titan11111.github.io/16-nigeru/', icon:'🤖' },
+      { title:'セルフトーク：ココロと対話', category:'adventure', keywords:'セルフトーク 対話 心', url:'https://titan11111.github.io/15-selftalk/', icon:'💭' },
+      { title:'ドキドキ診断：ハートチェック', category:'quiz', keywords:'診断 ドキドキ 心理', url:'https://titan11111.github.io/14-dokidoki/', icon:'💖' },
+      { title:'歴史ストーリー：時空の旅', category:'quiz learning', keywords:'歴史 勉強 ストーリー', url:'https://titan11111.github.io/13-histry/', icon:'📚' },
+      { title:'商売体験：マーケットマスター', category:'adventure', keywords:'商売 売買 体験 シミュレーション', url:'https://titan11111.github.io/12-buysell_game/', icon:'💰' },
+      { title:'買い物ゲーム：ショップチャレンジ', category:'adventure', keywords:'買い物 ショッピング お金', url:'https://titan11111.github.io/11-kaimono_game/', icon:'🛒' },
+      { title:'選択クイズ：正解を選べ', category:'quiz', keywords:'選択 クイズ 問題', url:'https://titan11111.github.io/10-senntaku_game/', icon:'❓' },
+      { title:'バトルゲーム2：ファイナルデュエル', category:'battle', keywords:'バトル 戦闘 戦い 2', url:'https://titan11111.github.io/9-battle2-game/', icon:'⚔️', isNew:true },
+      { title:'酸アルバトル：科学バトル', category:'battle learning', keywords:'酸 アルカリ 化学 バトル', url:'https://titan11111.github.io/8-sannaru_game/', icon:'⚗️' },
+      { title:'色育成：カラーワールド', category:'adventure', keywords:'色 育成 カラー', url:'https://titan11111.github.io/7-iro_game/', icon:'🌈' },
+      { title:'英語ゲーム：ワードクエスト', category:'quiz learning', keywords:'英語 学習', url:'https://titan11111.github.io/6-eigo-game/', icon:'📘' },
+      { title:'迷路クイズ：ラビリンスチャレンジ', category:'adventure quiz', keywords:'迷路 クイズ RPG 冒険', url:'https://titan11111.github.io/5-meiro_game/', icon:'🗺️' },
+      { title:'バトルゲーム：ソードアリーナ', category:'battle', keywords:'バトル 戦闘 戦い', url:'https://titan11111.github.io/4-battle-game/', icon:'⚔️' },
+      { title:'あみだくじ：ラッキーパス', category:'adventure', keywords:'あみだ くじ 運 選択', url:'https://titan11111.github.io/3-amida-game/', icon:'🎯' },
+      { title:'化合物クイズ：サイエンスピース', category:'quiz learning', keywords:'化合物 科学 理科 クイズ', url:'https://titan11111.github.io/2-kagoubutu_game/', icon:'🧪' },
+      { title:'ねこキャッチ：すばやく捕まえよう', category:'action', keywords:'ねこ 猫 キャッチ 動物', url:'https://titan11111.github.io/1-neko_catch_game/', icon:'🐱' }
+    ];
+
+    // グローバル
+    let currentPage = 1;
+    const itemsPerPage = 12;
+    let filteredGames = [];
+    let baseGames = []; // 毎回の基準（シャッフル済）
+    let currentCategory = 'all';
+
+    // DOM
+    const gamesList = document.getElementById('gamesList');
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageNumbers = document.getElementById('pageNumbers');
+    const gameCount = document.getElementById('gameCount');
+    const totalGames = document.getElementById('totalGames');
+    const newGames = document.getElementById('newGames');
+    const categories = document.getElementById('categories');
+    const totalPlays = document.getElementById('totalPlays'); // ★ 追加
+    const loading = document.getElementById('loading');
+
+    // シャッフル
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+      }
+      return arr;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // ローディング演出
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        initializeApp();
+      }, 1200);
+    });
+
+    function initializeApp(){
+      // 初期ロードごとに並びをランダム化
+      baseGames = shuffle([...gameData]);
+      filteredGames = [...baseGames];
+
+      updateStats();
+      renderGames();
+      setupEventListeners();
+      updatePagination();
+    }
+
+    function updateStats(){
+      totalGames.textContent = baseGames.length;
+      newGames.textContent = baseGames.filter(g => g.isNew).length;
+
+      const unique = new Set();
+      baseGames.forEach(g => g.category.split(' ').forEach(c => unique.add(c)));
+      categories.textContent = unique.size;
+
+      // ★ 総プレイ回数（localStorageの合計）
+      totalPlays.textContent = sumAllCounts();
+
+      animateCountUp(totalGames, parseInt(totalGames.textContent,10));
+      animateCountUp(newGames, parseInt(newGames.textContent,10));
+      animateCountUp(categories, parseInt(categories.textContent,10));
+      animateCountUp(totalPlays, parseInt(totalPlays.textContent,10));
+    }
+    function animateCountUp(el,target){
+      let cur=0; const inc=Math.max(1, target/50);
+      const t=setInterval(()=>{
+        cur+=inc;
+        if(cur>=target){cur=target;clearInterval(t)}
+        el.textContent=Math.floor(cur);
+      },30);
+    }
+
+    function setupEventListeners(){
+      searchInput.addEventListener('input', handleSearch);
+      searchBtn.addEventListener('click', handleSearch);
+      searchInput.addEventListener('keypress', e => { if(e.key==='Enter') handleSearch(); });
+
+      filterBtns.forEach(btn => btn.addEventListener('click', () => handleFilter(btn)));
+
+      prevBtn.addEventListener('click', () => changePage(currentPage-1));
+      nextBtn.addEventListener('click', () => changePage(currentPage+1));
+    }
+
+    function handleSearch(){
+      const term = searchInput.value.toLowerCase().trim();
+
+      if(term===''){
+        filteredGames = baseGames.filter(g => currentCategory==='all' || g.category.includes(currentCategory));
+      }else{
+        filteredGames = baseGames.filter(g => {
+          const matchCat = (currentCategory==='all' || g.category.includes(currentCategory));
+          const matchText =
+            g.title.toLowerCase().includes(term) ||
+            g.keywords.toLowerCase().includes(term) ||
+            g.category.toLowerCase().includes(term);
+          return matchCat && matchText;
+        });
+      }
+      currentPage = 1;
+      renderGames(); updatePagination();
+
+      if(term){
+        setTimeout(()=>{
+          document.querySelectorAll('.game-card').forEach(card=>{
+            card.animate([{transform:'translateY(0)'},{transform:'translateY(-8px)'},{transform:'translateY(0)'}],{duration:600,easing:'ease-in-out'});
+          });
+        },100);
+      }
+    }
+
+    function handleFilter(btn){
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      currentCategory = btn.dataset.category;
+      const term = searchInput.value.toLowerCase().trim();
+
+      if(currentCategory==='all'){
+        filteredGames = baseGames.filter(g =>
+          term==='' ||
+          g.title.toLowerCase().includes(term) ||
+          g.keywords.toLowerCase().includes(term) ||
+          g.category.toLowerCase().includes(term)
+        );
+      }else{
+        filteredGames = baseGames.filter(g => {
+          const matchCat = g.category.includes(currentCategory);
+          const matchText = term==='' ||
+            g.title.toLowerCase().includes(term) ||
+            g.keywords.toLowerCase().includes(term) ||
+            g.category.toLowerCase().includes(term);
+          return matchCat && matchText;
+        });
+      }
+      currentPage = 1;
+      renderGames(); updatePagination();
+    }
+
+    function renderGames(){
+      const start = (currentPage-1)*itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageGames = filteredGames.slice(start,end);
+
+      gamesList.innerHTML='';
+      gameCount.textContent = `(${filteredGames.length})`;
+
+      if(pageGames.length===0){
+        gamesList.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:3rem;">
+            <div style="font-size:4rem;margin-bottom:1rem;">😅</div>
+            <h3 style="color:#00ffff;margin-bottom:1rem;">ゲームが見つかりません</h3>
+            <p style="color:#cccccc;">別のキーワードで検索してみてください</p>
+          </div>`;
+        return;
+      }
+
+      pageGames.forEach((game,i)=>{
+        const card = createGameCard(game);
+        card.style.animationDelay = `${i*0.1}s`;
+        gamesList.appendChild(card);
+      });
+    }
+
+    function createGameCard(game){
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      card.innerHTML = `
+        <div class="game-header">
+          <div class="game-icon">${game.icon}</div>
+          <div class="game-title">${game.title}</div>
+          ${game.isNew ? '<div class="new-badge">NEW!</div>' : ''}
+        </div>
+        <div class="game-keywords">${game.keywords}</div>
+        <!-- ★ 累計回数の表示 -->
+        <div class="play-count">累計プレイ<span class="count-pill"><span class="count-num">${getCount(game.url)}</span> 回</span></div>
+        <button class="play-btn">🎮 遊ぶ</button>
+      `;
+      const playBtn = card.querySelector('.play-btn');
+      playBtn.addEventListener('click',(e)=>{
+        const btn=e.currentTarget; btn.style.transform='scale(0.95)';
+        // ★ カウント更新→UI反映→保存→合計更新
+        addCount(game.url);
+        const numEl = card.querySelector('.count-num');
+        if(numEl) numEl.textContent = getCount(game.url);
+        if(totalPlays) totalPlays.textContent = sumAllCounts();
+        setTimeout(()=>{ btn.style.transform=''; window.open(game.url,'_blank'); },150);
+      });
+      return card;
+    }
+
+    function updatePagination(){
+      const totalPages = Math.ceil(filteredGames.length/itemsPerPage);
+      prevBtn.disabled = (currentPage===1);
+      nextBtn.disabled = (currentPage===totalPages || totalPages===0);
+
+      pageNumbers.innerHTML='';
+      if(totalPages<=1) return;
+
+      const maxVisible = 5;
+      let start = Math.max(1, currentPage - Math.floor(maxVisible/2));
+      let end = Math.min(totalPages, start + maxVisible - 1);
+      if(end - start + 1 < maxVisible){ start = Math.max(1, end - maxVisible + 1); }
+
+      for(let i=start;i<=end;i++){
+        const pageBtn = document.createElement('div');
+        pageBtn.className = `page-number ${i===currentPage?'active':''}`;
+        pageBtn.textContent = i;
+        pageBtn.addEventListener('click',()=>changePage(i));
+        pageNumbers.appendChild(pageBtn);
+      }
+    }
+
+    function changePage(p){
+      const totalPages = Math.ceil(filteredGames.length/itemsPerPage);
+      if(p<1 || p>totalPages) return;
+      currentPage = p;
+      renderGames(); updatePagination();
+      document.querySelector('.games-section').scrollIntoView({behavior:'smooth'});
+    }
+  </script>
 </body>
 </html>
