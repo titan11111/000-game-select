@@ -1,5 +1,6 @@
 // ゲームデータ
 const gameData = [
+    { title: 'リズムゲーム2：ビートマスター', category: 'action', keywords: 'リズム 音楽 ビート', url: 'https://titan11111.github.io/63-rizme2/', icon: '🎵', isNew: true },
     { title: 'RPG4：新たなる冒険', category: 'adventure', keywords: 'RPG ファンタジー 冒険 4', url: 'https://titan11111.github.io/62-RPG4/', icon: '🛡️', isNew: true },
     { title: 'リズムゲーム：ビートチャレンジ', category: 'action', keywords: 'リズム 音楽 ビート', url: 'https://titan11111.github.io/61-rizme/', icon: '🎵', isNew: true },
     { title: 'インベーダーブロック：宇宙の攻防', category: 'action', keywords: 'インベーダー ブロック シューティング パズル', url: 'https://titan11111.github.io/59-inveder-block/', icon: '👾', isNew: true },
