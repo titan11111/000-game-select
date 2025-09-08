@@ -24,7 +24,7 @@ const gameData = [
     { title: 'ホラー脱出2：闇夜の再来', category: 'adventure', keywords: 'ホラー 怖い 脱出', url: 'https://titan11111.github.io/41-horaa2/', icon: '👻', isNew: true },
     { title: '格闘チャンピオン', category: 'battle action', keywords: '格闘 バトル 対戦', url: 'https://titan11111.github.io/40-kakuge/', icon: '🥊', isNew: true },
     { title: 'ホラー脱出', category: 'adventure', keywords: 'ホラー 怖い 脱出', url: 'https://titan11111.github.io/39-horaa/', icon: '👻', isNew: true },
-    { title: 'シューティング3：星海の大決戦', category: 'action', keywords: 'シューティング 宇宙 弾幕', url: 'https://titan11111.github.io/38-shoot3/', icon: '🚀', isNew: true },
+    { title: '星空バトラー', category: 'action', keywords: 'シューティング 宇宙 弾幕', url: 'https://titan11111.github.io/38-shoot3/', icon: '🚀', isNew: true },
     { title: '冒険RPG：伝説の始まり', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/37-RPG/', icon: '🧙‍♂️', isNew: true },
     { title: '学園アドベンチャー：ひみつの放課後', category: 'adventure', keywords: '学園 学校', url: 'https://titan11111.github.io/35-gakuen/', icon: '🏫', isNew: true },
     { title: 'デモンキャッスル：魔城の試練', category: 'adventure', keywords: 'デモン キャッスル 魔物', url: 'https://titan11111.github.io/34-demon_castle/', icon: '🏰', isNew: true },
