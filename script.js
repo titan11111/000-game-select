@@ -1,5 +1,6 @@
 // ゲームデータ
 const gameData = [
+      { title: 'ピンクマン：ドットの迷宮', category: 'action', keywords: 'ピンクマン パックマン 迷路', url: 'https://titan11111.github.io/64-pincman/', icon: '🟡', isNew: true },
       { title:'RPG5：未知への旅', category:'adventure', keywords:'RPG ファンタジー 冒険', url:'https://titan11111.github.io/65-RPG5/', icon:'🛡️', isNew:true },
     { title: 'RPG：新たな冒険', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/64-RPG-/', icon: '🛡️', isNew: true },
     { title: '爆速宅配人 3D', category: 'adventure', keywords: 'RPG ファンタジー 冒険 4', url: 'https://titan11111.github.io/62-RPG4/', icon: '🛡️', isNew: true },
