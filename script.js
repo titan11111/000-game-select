@@ -62,6 +62,27 @@ const gameData = [
     { title: 'ねこキャッチ：すばやく捕まえよう', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' }
 ];
 
+// カテゴリーの正規化
+function normalizeCategory(game) {
+    const text = (game.title + ' ' + game.keywords).toLowerCase();
+    if (text.includes('rpg')) {
+        game.category = 'rpg';
+    } else if (text.includes('シューティング') || text.includes('shoot')) {
+        game.category = 'shooting';
+    } else if (game.category.includes('battle')) {
+        game.category = 'battle';
+    } else if (game.category.includes('quiz')) {
+        game.category = 'quiz';
+    } else if (game.category.includes('learning')) {
+        game.category = 'learning';
+    } else if (game.category.includes('action')) {
+        game.category = 'action';
+    } else {
+        game.category = 'adventure';
+    }
+}
+gameData.forEach(normalizeCategory);
+
 // グローバル変数
 let currentPage = 1;
 let itemsPerPage = 12;
