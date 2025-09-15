@@ -1,5 +1,6 @@
 // ゲームデータ
 const gameData = [
+      { title: 'ねこクイズ：にゃんこ知識テスト', category: 'quiz', keywords: 'ねこ 猫 クイズ', url: 'https://titan11111.github.io/66-catquiz/', icon: '🐱', isNew: true },
       { title: 'ピンクマン：ドットの迷宮', category: 'action', keywords: 'ピンクマン パックマン 迷路', url: 'https://titan11111.github.io/64-pincman/', icon: '🟡', isNew: true },
       { title:'RPG5：未知への旅', category:'adventure', keywords:'RPG ファンタジー 冒険', url:'https://titan11111.github.io/65-RPG5/', icon:'🛡️', isNew:true },
     { title: 'RPG：新たな冒険', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/64-RPG-/', icon: '🛡️', isNew: true },
