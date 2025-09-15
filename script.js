@@ -62,6 +62,9 @@ const gameData = [
     { title: 'ねこキャッチ：すばやく捕まえよう', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' }
 ];
 
+// タイトルをあいうえお順にソート
+gameData.sort((a,b) => a.title.localeCompare(b.title,'ja'));
+
 // カテゴリーの正規化
 function normalizeCategory(game) {
     const text = (game.title + ' ' + game.keywords).toLowerCase();
