@@ -363,7 +363,7 @@
     let currentPage = 1;
     const itemsPerPage = 12;
     let filteredGames = [];
-    let baseGames = []; // 毎回の基準（シャッフル済）
+    let baseGames = []; // 毎回の基準（タイトル順）
     let currentCategory = 'all';
 
     // DOM
@@ -381,15 +381,6 @@
     const totalPlays = document.getElementById('totalPlays'); // ★ 追加
     const loading = document.getElementById('loading');
 
-    // シャッフル
-    function shuffle(arr){
-      for(let i=arr.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]]=[arr[j],arr[i]];
-      }
-      return arr;
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
       // ローディング演出
       setTimeout(() => {
@@ -399,8 +390,8 @@
     });
 
     function initializeApp(){
-      // 初期ロードごとに並びをランダム化
-      baseGames = shuffle([...gameData]);
+      // 初期ロード時にタイトル順に並び替え
+      baseGames = [...gameData].sort((a,b)=>a.title.localeCompare(b.title,'ja'));
       filteredGames = [...baseGames];
 
       updateStats();
