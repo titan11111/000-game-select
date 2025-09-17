@@ -1,1198 +1,154 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎮 TITAN GAMES - セレクト</title>
-  <style>
-    /* ===== ロックマン風スタイル ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Courier New', monospace;
-      background: linear-gradient(135deg, #001122, #003366, #0066cc);
-      color: #ffffff;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
-
-    /* 背景アニメーション */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: 
-        radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 255, 0, 0.1) 0%, transparent 50%),
-        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.05) 50%, transparent 60%);
-      animation: bgMove 10s ease-in-out infinite;
-      z-index: -1;
-    }
-
-    @keyframes bgMove {
-      0%, 100% { transform: translateX(0) translateY(0); }
-      50% { transform: translateX(-20px) translateY(-10px); }
-    }
-
-    /* ヘッダー */
-    .header {
-      background: linear-gradient(90deg, #000033, #0066cc, #000033);
-      border: 4px solid #00ffff;
-      border-top: none;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 
-        0 4px 0 #0044aa,
-        0 8px 0 #002288,
-        0 12px 20px rgba(0, 255, 255, 0.3);
-    }
-
-    .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1.5rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .logo {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #ffffff;
-      text-shadow: 
-        2px 2px 0 #00ffff,
-        4px 4px 0 #0066cc,
-        6px 6px 10px rgba(0, 0, 0, 0.8);
-      animation: logoGlow 2s ease-in-out infinite alternate;
-      letter-spacing: 2px;
-    }
-
-    @keyframes logoGlow {
-      from { 
-        filter: drop-shadow(0 0 10px #00ffff);
-        transform: scale(1);
-      }
-      to { 
-        filter: drop-shadow(0 0 20px #00ffff);
-        transform: scale(1.02);
-      }
-    }
-
-    .search-container {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .search-input {
-      padding: 1rem 1.5rem;
-      border: 3px solid #00ffff;
-      border-radius: 0;
-      background: #000033;
-      color: #ffffff;
-      font-size: 1.1rem;
-      min-width: 300px;
-      font-family: 'Courier New', monospace;
-      box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
-      transition: all 0.2s ease;
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: #ffff00;
-      box-shadow: 
-        inset 0 0 10px rgba(255, 255, 0, 0.3),
-        0 0 15px rgba(255, 255, 0, 0.5);
-      transform: scale(1.02);
-    }
-
-    .search-btn {
-      padding: 1rem 1.5rem;
-      background: linear-gradient(45deg, #00ffff, #0099ff);
-      border: 3px solid #ffffff;
-      color: #000033;
-      cursor: pointer;
-      font-size: 1.2rem;
-      font-weight: bold;
-      font-family: 'Courier New', monospace;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 #0066aa;
-    }
-
-    .search-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #0066aa;
-    }
-
-    .search-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #0066aa;
-    }
-
-    /* メインコンテンツ */
-    .main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .section-title {
-      font-size: 2.5rem;
-      margin-bottom: 2rem;
-      text-align: center;
-      color: #ffffff;
-      text-shadow: 
-        2px 2px 0 #00ffff,
-        4px 4px 0 #0066cc;
-      letter-spacing: 3px;
-      animation: titlePulse 3s ease-in-out infinite;
-    }
-
-    @keyframes titlePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    /* ソート・フィルター */
-    .controls-section {
-      margin-bottom: 3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-
-    .sort-controls {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .sort-btn {
-      padding: 1rem 2rem;
-      background: linear-gradient(45deg, #ff6600, #ffaa00);
-      border: 3px solid #ffffff;
-      color: #000033;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: bold;
-      font-family: 'Courier New', monospace;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 #cc4400;
-      text-transform: uppercase;
-    }
-
-    .sort-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #cc4400;
-    }
-
-    .sort-btn:active, .sort-btn.active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #cc4400;
-      background: linear-gradient(45deg, #ffaa00, #ffcc00);
-    }
-
-    .filter-buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .filter-btn {
-      padding: 1rem 1.5rem;
-      background: linear-gradient(45deg, #6600ff, #9900ff);
-      border: 3px solid #ffffff;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 1rem;
-      font-weight: bold;
-      font-family: 'Courier New', monospace;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 #4400aa;
-      text-transform: uppercase;
-    }
-
-    .filter-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #4400aa;
-    }
-
-    .filter-btn:active, .filter-btn.active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #4400aa;
-      background: linear-gradient(45deg, #9900ff, #cc00ff);
-    }
-
-    /* 統計 */
-    .stats-section {
-      margin-bottom: 3rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 2rem;
-    }
-
-    .stat-card {
-      background: linear-gradient(135deg, #000044, #000066);
-      border: 4px solid #00ffff;
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-      box-shadow: 
-        0 4px 0 #0066aa,
-        0 8px 0 #003366,
-        0 12px 20px rgba(0, 0, 0, 0.5);
-      transition: all 0.2s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 
-        0 8px 0 #0066aa,
-        0 12px 0 #003366,
-        0 16px 25px rgba(0, 0, 0, 0.6);
-    }
-
-    .stat-card::before {
-      content: '';
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      border: 2px solid rgba(0, 255, 255, 0.3);
-      animation: statBorder 2s ease-in-out infinite;
-    }
-
-    @keyframes statBorder {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 0.8; }
-    }
-
-    .stat-number {
-      font-size: 3.5rem;
-      font-weight: bold;
-      color: #ffff00;
-      margin-bottom: 0.5rem;
-      text-shadow: 2px 2px 0 #ff6600;
-      font-family: 'Courier New', monospace;
-    }
-
-    .stat-label {
-      font-size: 1.2rem;
-      color: #ffffff;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    /* ロックマン風ゲームグリッド */
-    .games-section {
-      margin-bottom: 3rem;
-    }
-
-    .games-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      padding: 2rem;
-      background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
-      border: 4px solid #00ffff;
-      border-radius: 0;
-    }
-
-    .game-card {
-      background: linear-gradient(135deg, #000066, #003399);
-      border: 4px solid #ffffff;
-      padding: 1.5rem;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.1s ease;
-      box-shadow: 
-        0 4px 0 #0066cc,
-        0 8px 0 #003366,
-        0 12px 15px rgba(0, 0, 0, 0.4);
-      animation: cardFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes cardFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-3px); }
-    }
-
-    .game-card:hover {
-      transform: translateY(-6px) scale(1.02);
-      border-color: #ffff00;
-      box-shadow: 
-        0 8px 0 #0066cc,
-        0 12px 0 #003366,
-        0 16px 20px rgba(0, 0, 0, 0.5),
-        0 0 20px rgba(255, 255, 0, 0.5);
-    }
-
-    .game-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid #00ffff;
-    }
-
-    .game-icon {
-      font-size: 3rem;
-      width: 60px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(45deg, #ffff00, #ffaa00);
-      border: 3px solid #ffffff;
-      color: #000033;
-    }
-
-    .game-title {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #ffffff;
-      flex: 1;
-      text-shadow: 1px 1px 0 #000033;
-      line-height: 1.3;
-    }
-
-    .new-badge {
-      background: linear-gradient(45deg, #ff0066, #ff3399);
-      color: #ffffff;
-      padding: 0.4rem 0.8rem;
-      font-size: 0.9rem;
-      font-weight: bold;
-      border: 2px solid #ffffff;
-      animation: newBadge 1s ease-in-out infinite;
-    }
-
-    @keyframes newBadge {
-      0%, 100% { transform: scale(1) rotate(-2deg); }
-      50% { transform: scale(1.1) rotate(2deg); }
-    }
-
-    .game-keywords {
-      background: rgba(0, 255, 255, 0.2);
-      color: #00ffff;
-      padding: 0.6rem 1rem;
-      margin-bottom: 1rem;
-      border: 2px solid #00ffff;
-      font-size: 0.95rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .play-count {
-      margin-bottom: 1rem;
-      color: #ffffff;
-      font-size: 1rem;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .count-pill {
-      background: linear-gradient(45deg, #ff6600, #ffaa00);
-      color: #000033;
-      padding: 0.3rem 0.8rem;
-      border: 2px solid #ffffff;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-
-    .play-btn {
-      width: 100%;
-      padding: 1.2rem;
-      background: linear-gradient(45deg, #00ff00, #66ff00);
-      border: 4px solid #ffffff;
-      color: #000033;
-      font-size: 1.3rem;
-      font-weight: bold;
-      cursor: pointer;
-      font-family: 'Courier New', monospace;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 #00aa00;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-
-    .play-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #00aa00;
-      background: linear-gradient(45deg, #66ff00, #99ff00);
-    }
-
-    .play-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #00aa00;
-    }
-
-    /* ページネーション */
-    .pagination-section {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      margin: 3rem 0;
-      flex-wrap: wrap;
-    }
-
-    .page-btn {
-      padding: 1rem 2rem;
-      background: linear-gradient(45deg, #6600ff, #9900ff);
-      border: 3px solid #ffffff;
-      color: #ffffff;
-      cursor: pointer;
-      font-size: 1.1rem;
-      font-weight: bold;
-      font-family: 'Courier New', monospace;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 #4400aa;
-    }
-
-    .page-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #4400aa;
-    }
-
-    .page-btn:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #4400aa;
-    }
-
-    .page-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      background: #666666;
-      box-shadow: 0 4px 0 #333333;
-    }
-
-    .page-numbers {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .page-number {
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(45deg, #0066ff, #0099ff);
-      border: 3px solid #ffffff;
-      color: #ffffff;
-      cursor: pointer;
-      font-weight: bold;
-      font-family: 'Courier New', monospace;
-      transition: all 0.1s ease;
-      box-shadow: 0 4px 0 #0044aa;
-    }
-
-    .page-number:hover, .page-number.active {
-      background: linear-gradient(45deg, #ffff00, #ffaa00);
-      color: #000033;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 0 #cc8800;
-    }
-
-    .page-number:active {
-      transform: translateY(2px);
-      box-shadow: 0 2px 0 #cc8800;
-    }
-
-    /* フッター */
-    .footer {
-      background: linear-gradient(90deg, #000033, #0066cc, #000033);
-      text-align: center;
-      padding: 2rem;
-      border-top: 4px solid #00ffff;
-      margin-top: 3rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      color: #ffffff;
-      text-shadow: 1px 1px 0 #000033;
-    }
-
-    /* ローディング */
-    .loading {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, #000033, #0066cc);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      transition: opacity 0.5s ease;
-    }
-
-    .loading.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .loading-spinner {
-      width: 80px;
-      height: 80px;
-      border: 6px solid rgba(0, 255, 255, 0.3);
-      border-top: 6px solid #00ffff;
-      border-radius: 0;
-      animation: loadingSpin 1s linear infinite;
-      margin-bottom: 2rem;
-    }
-
-    @keyframes loadingSpin {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.1); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-
-    .loading-text {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #ffffff;
-      text-shadow: 2px 2px 0 #00ffff;
-      font-family: 'Courier New', monospace;
-      letter-spacing: 3px;
-      animation: loadingText 1.5s ease-in-out infinite;
-    }
-
-    @keyframes loadingText {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    /* レスポンシブ */
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-      
-      .search-input {
-        min-width: 250px;
-      }
-      
-      .main {
-        padding: 1rem;
-      }
-      
-      .games-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 1rem;
-      }
-      
-      .filter-buttons {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-      }
-      
-      .sort-controls {
-        flex-direction: column;
-        gap: 0.8rem;
-      }
-      
-      .logo {
-        font-size: 2rem;
-      }
-      
-      .section-title {
-        font-size: 2rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .game-card {
-        padding: 1rem;
-      }
-      
-      .game-title {
-        font-size: 1.2rem;
-      }
-      
-      .game-icon {
-        font-size: 2.5rem;
-        width: 50px;
-        height: 50px;
-      }
-      
-      .search-input {
-        min-width: 200px;
-        font-size: 1rem;
-      }
-      
-      .filter-buttons {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ゲーム・カード一覧（001–066）</title>
+<style>
+  :root { --radius:12px; --shadow:0 4px 16px rgba(0,0,0,.08); }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif; background:#f6f7f9; color:#222; }
+  header { padding: 16px 20px; background:#fff; position: sticky; top:0; box-shadow: 0 1px 6px rgba(0,0,0,.05); z-index: 10; }
+  h1 { margin: 0 0 10px; font-size: 18px; }
+  .tools { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  input[type="search"]{ flex:1 1 260px; padding:10px 12px; border:1px solid #ddd; border-radius:8px; font-size:14px; }
+  .count { font-size:12px; color:#666; }
+  main { padding: 20px; max-width: 1100px; margin: 0 auto; }
+  .grid { display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background:#fff; border-radius: var(--radius); box-shadow: var(--shadow); padding:14px; display:flex; flex-direction:column; transition: transform .12s ease, box-shadow .12s ease; }
+  .card:hover{ transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.12); }
+  .icon { font-size:34px; line-height:1; }
+  .title { margin:10px 0 6px; font-weight:700; font-size:16px; }
+  .meta { color:#666; font-size:12px; margin-bottom:10px; }
+  .tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .tag { font-size:11px; background:#f0f3f8; color:#3a4b6b; padding:4px 6px; border-radius:6px; }
+  .btn { margin-top:auto; display:inline-block; text-align:center; padding:10px 12px; border-radius:8px; background:#1a73e8; color:#fff; text-decoration:none; font-weight:600; font-size:14px; }
+  .btn:focus { outline: 2px solid #1a73e8; outline-offset: 2px; }
+  .empty { color:#777; padding:24px; text-align:center; }
+  footer { text-align:center; color:#888; font-size:12px; padding:20px; }
+</style>
 </head>
 <body>
-  <!-- ヘッダー -->
-  <header class="header">
-    <div class="header-content">
-      <h1 class="logo">🎮 TITAN GAMES</h1>
-      <div class="search-container">
-        <input id="searchInput" type="text" placeholder="ゲームを検索..." class="search-input" />
-        <button id="searchBtn" class="search-btn">🔍</button>
-      </div>
+  <header>
+    <h1>ゲーム・カード一覧（001–066）</h1>
+    <div class="tools">
+      <input id="q" type="search" placeholder="タイトル・カテゴリ・キーワードで検索…" aria-label="検索" />
+      <span id="count" class="count"></span>
     </div>
   </header>
 
-  <main class="main">
-    <!-- ソート・フィルター -->
-    <section class="controls-section">
-      <h2 class="section-title">🎯 ゲームセレクト</h2>
-      
-      <div class="sort-controls">
-        <button class="sort-btn active" data-sort="mixed">📈 人気＆最新順</button>
-        <button class="sort-btn" data-sort="plays">🔥 プレイ回数順</button>
-        <button class="sort-btn" data-sort="new">⭐ 新着順</button>
-        <button class="sort-btn" data-sort="title">📝 タイトル順</button>
-      </div>
-      
-      <div class="filter-buttons">
-        <button class="filter-btn active" data-category="all">すべて</button>
-        <button class="filter-btn" data-category="action">アクション</button>
-        <button class="filter-btn" data-category="rpg">RPG</button>
-        <button class="filter-btn" data-category="shooting">シューティング</button>
-        <button class="filter-btn" data-category="adventure">アドベンチャー</button>
-        <button class="filter-btn" data-category="battle">バトル</button>
-        <button class="filter-btn" data-category="quiz">クイズ</button>
-        <button class="filter-btn" data-category="learning">学習</button>
-      </div>
-    </section>
-
-    <!-- 統計 -->
-    <section class="stats-section">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div id="totalGames" class="stat-number">0</div>
-          <div class="stat-label">総ゲーム数</div>
-        </div>
-        <div class="stat-card">
-          <div id="newGames" class="stat-number">0</div>
-          <div class="stat-label">新作ゲーム</div>
-        </div>
-        <div class="stat-card">
-          <div id="categories" class="stat-number">0</div>
-          <div class="stat-label">カテゴリー</div>
-        </div>
-        <div class="stat-card">
-          <div id="totalPlays" class="stat-number">0</div>
-          <div class="stat-label">総プレイ回数</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ゲーム一覧 -->
-    <section class="games-section">
-      <h2 class="section-title">🎮 ゲーム一覧 <span id="gameCount">(0)</span></h2>
-      <div id="gamesList" class="games-grid"></div>
-    </section>
-
-    <!-- ページネーション -->
-    <section class="pagination-section">
-      <button id="prevBtn" class="page-btn">◀ 前へ</button>
-      <div id="pageNumbers" class="page-numbers"></div>
-      <button id="nextBtn" class="page-btn">次へ ▶</button>
-    </section>
+  <main>
+    <div id="grid" class="grid" aria-live="polite"></div>
+    <div id="empty" class="empty" hidden>見つかりませんでした。</div>
   </main>
 
-  <footer class="footer">
-    <p>&copy; 2025 TITAN GAMES - ロックマン風ボスセレクト</p>
-  </footer>
+  <footer>© あなたの作品一覧</footer>
 
-  <!-- ローディング -->
-  <div id="loading" class="loading">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">LOADING...</div>
-  </div>
+<script>
+  const GAMES = [
+    { title: 'ねこキャッチ：すばやく捕まえよう', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/001-neko_catch_game/', icon: '🐱' },
+    { title: '化合物クイズ：サイエンスピース', category: 'quiz learning', keywords: '化合物 科学 理科 クイズ', url: 'https://titan11111.github.io/002-kagoubutu_game/', icon: '🧪' },
+    { title: 'あみだくじ：ラッキーパス', category: 'adventure', keywords: 'あみだ くじ 運 選択', url: 'https://titan11111.github.io/003-amida-game/', icon: '🎯' },
+    { title: 'バトルゲーム：ソードアリーナ', category: 'battle', keywords: 'バトル 戦闘 戦い', url: 'https://titan11111.github.io/004-battle-game/', icon: '⚔️' },
+    { title: '迷路クイズ：ラビリンスチャレンジ', category: 'adventure quiz', keywords: '迷路 クイズ RPG 冒険', url: 'https://titan11111.github.io/005-meiro_game/', icon: '🗺️' },
+    { title: '英語ゲーム', category: 'quiz learning', keywords: '英語 単語 文法 学習', url: 'https://titan11111.github.io/006-eigo/', icon: '📝' },
+    { title: '色育成：カラーワールド', category: 'adventure', keywords: '色 育成 カラー', url: 'https://titan11111.github.io/007-iro_game/', icon: '🌈' },
+    { title: '酸アルバトル：科学バトル', category: 'battle learning', keywords: '酸 アルカリ 化学 バトル', url: 'https://titan11111.github.io/008-sannaru_game/', icon: '⚗️' },
+    { title: 'モンスタークイズバトル！', category: 'battle', keywords: 'バトル 戦闘 戦い 2', url: 'https://titan11111.github.io/009-battle2-game/', icon: '⚔️' },
+    { title: '選択クイズ：正解を選べ', category: 'quiz', keywords: '選択 クイズ 問題', url: 'https://titan11111.github.io/010-senntaku_game/', icon: '❓' },
+    { title: '買い物ゲーム：ショップチャレンジ', category: 'adventure', keywords: '買い物 ショッピング お金', url: 'https://titan11111.github.io/011-kaimono_game/', icon: '🛒' },
+    { title: '商売体験：マーケットマスター', category: 'adventure', keywords: '商売 売買 体験 シミュレーション', url: 'https://titan11111.github.io/012-buysell_game/', icon: '💰' },
+    { title: '歴史ストーリー：時空の旅', category: 'quiz learning', keywords: '歴史 勉強 ストーリー', url: 'https://titan11111.github.io/013-histry/', icon: '📚' },
+    { title: 'ドキドキ診断：ハートチェック', category: 'quiz', keywords: '診断 ドキドキ 心理', url: 'https://titan11111.github.io/014-dokidoki/', icon: '💖' },
+    { title: 'セルフトーク：ココロと対話', category: 'adventure', keywords: 'セルフトーク 対話 心', url: 'https://titan11111.github.io/015-selftalk/', icon: '💭' },
+    { title: 'ロボットランナー：メカダッシュ', category: 'action', keywords: 'ロボット ランナー 走る', url: 'https://titan11111.github.io/016-nigeru/', icon: '🤖' },
+    { title: 'アクションミニゲーム', category: 'action', keywords: '電脳 サイバー アクション SF', url: 'https://titan11111.github.io/017-action/', icon: '🚀' },
+    { title: 'RPG', category: 'adventure', keywords: 'RPG 冒険 物語', url: 'https://github.com/titan11111/018-rpg', icon: '🎮' },
+    { title: 'らっか：スカイドロップ', category: 'action', keywords: '落下 アクション スピード 反射神経', url: 'https://titan11111.github.io/019-rakka/', icon: '🪂' },
+    { title: '対称パズル：ミラーの魔法', category: 'adventure', keywords: '対称 パズル 美しい', url: 'https://titan11111.github.io/020-taisyou/', icon: '✨' },
+    { title: 'おさんぽ日和：てくてく冒険', category: 'adventure', keywords: '散歩 探索 のんびり', url: 'https://titan11111.github.io/021-sanpo/', icon: '🚶' },
+    { title: '呪符覚醒', category: 'adventure', keywords: '呪符 魔法 インフレ RPG', url: 'https://github.com/titan11111/022-jufukakusei', icon: '🌀' },
+    { title: '給食当番リズム：キッチンビート', category: 'action', keywords: '給食 リズム 学校', url: 'https://titan11111.github.io/023-kyuusyoku/', icon: '🍽️' },
+    { title: 'ねこねこねこ：にゃんこパレード', category: 'action', keywords: 'ねこ 猫 たくさん', url: 'https://titan11111.github.io/024-nekonekoneko/', icon: '😸' },
+    { title: '平和な世界の村人の悩み解決屋さん', category: 'adventure', keywords: '平和 世界 村人 悩み 解決', url: 'https://titan11111.github.io/025-heiwa/', icon: '🕊️' },
+    { title: '坊主めくり：運試しバトル', category: 'quiz', keywords: '坊主 めくり カード 伝統', url: 'https://titan11111.github.io/026-bouzu/', icon: '🎴' },
+    { title: '迷いの森：ささやく木々の誘い', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/027-mayoimori/', icon: '🌲' },
+    { title: 'クイズ3：ひらめき勝負', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/028-quiz3/', icon: '🧠' },
+    { title: 'アクションRPG2', category: 'adventure', keywords: 'RPG アクション 冒険', url: 'https://titan11111.github.io/029-actionrpg2/', icon: '🛡️' },
+    { title: '世界樹探検：伝説の樹を求めて', category: 'adventure', keywords: '神秘 ファンタジー 冒険 世界樹 探検', url: 'https://titan11111.github.io/030-yugudora/', icon: '🌳' },
+    { title: 'シューティング1：初めての戦場', category: 'action', keywords: 'シューティング 射撃', url: 'https://titan11111.github.io/031-shoot/', icon: '🔫' },
+    { title: 'シューティング2：炎の逆襲', category: 'action', keywords: 'シューティング 射撃 連射', url: 'https://titan11111.github.io/032-shoot2/', icon: '🎯' },
+    { title: 'ねくび：夢みる旅人', category: 'adventure', keywords: 'ねくび 眠り 夢', url: 'https://titan11111.github.io/033-nekubi/', icon: '😴' },
+    { title: 'デモンキャッスル：魔城の試練', category: 'adventure', keywords: 'デモン キャッスル 魔物', url: 'https://titan11111.github.io/034-demon_castle/', icon: '🏰' },
+    { title: '学園アドベンチャー：ひみつの放課後', category: 'adventure', keywords: '学園 学校', url: 'https://titan11111.github.io/035-gakuen/', icon: '🏫' },
+    { title: 'クイズ4', category: 'quiz', keywords: 'クイズ 問題 ひらめき', url: 'https://github.com/titan11111/036-quiz4', icon: '🧩' },
+    { title: '冒険RPG：伝説の始まり', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/037-RPG/', icon: '🧙‍♂️' },
+    { title: 'コードブレイカー', category: 'quiz', keywords: '暗号 解読 パズル', url: 'https://github.com/titan11111/038-codebraker', icon: '🔐' },
+    { title: '深夜のコンビニ店員', category: 'adventure', keywords: 'ホラー 怖い 脱出', url: 'https://titan11111.github.io/039-horaa/', icon: '👻' },
+    { title: '格闘チャンピオン', category: 'battle action', keywords: '格闘 バトル 対戦', url: 'https://titan11111.github.io/040-kakuge/', icon: '🥊' },
+    { title: '家の見取り図', category: 'adventure', keywords: 'ホラー 怖い 脱出', url: 'https://titan11111.github.io/041-mitorizu/', icon: '👻' },
+    { title: '３Ｄシューティングゲーム', category: 'action', keywords: 'シューティング 宇宙 弾幕', url: 'https://titan11111.github.io/042-3Dshooting/', icon: '🚀' },
+    { title: '格闘チャンピオン2：最強の挑戦者', category: 'battle action', keywords: '格闘 バトル 対戦', url: 'https://titan11111.github.io/043-kakuge2/', icon: '🥊' },
+    { title: 'アクションRPG', category: 'adventure', keywords: 'RPG アクション', url: 'https://titan11111.github.io/044-actionRPG/', icon: '🛡️' },
+    { title: 'ミタ：未知の冒険', category: 'adventure', keywords: 'ミタ 冒険', url: 'https://titan11111.github.io/045-mita/', icon: '👀' },
+    { title: '電車', category: 'adventure', keywords: '電車 旅 移動', url: 'https://github.com/titan11111/046-dennsya', icon: '🚉' },
+    { title: 'マイクラ風', category: 'adventure', keywords: 'サンドボックス ブロック 制作', url: 'https://github.com/titan11111/047-maikura', icon: '🧱' },
+    { title: 'RPG2', category: 'adventure', keywords: 'RPG 冒険', url: 'https://github.com/titan11111/048-RPG2', icon: '⚔️' },
+    { title: 'テトリス', category: 'puzzle', keywords: 'テトリス ブロック パズル', url: 'https://github.com/titan11111/049-tetoris', icon: '🎲' },
+    { title: 'アクションジャンプ：天空への挑戦', category: 'action', keywords: 'アクション ジャンプ', url: 'https://titan11111.github.io/050-action-jamp/', icon: '🏃' },
+    { title: 'ルーレット：運命の回転', category: 'quiz', keywords: 'ルーレット 運 試し', url: 'https://titan11111.github.io/051-rulet/', icon: '🎰' },
+    { title: '爆速', category: 'action', keywords: '高速 スピード 反射', url: 'https://github.com/titan11111/052-bakusoku', icon: '🚀' },
+    { title: 'スキャンファイターズ：超反応バトル', category: 'battle action', keywords: 'スキャン ファイター バトル', url: 'https://titan11111.github.io/053-SCAN-FIGHTERS/', icon: '🛰️' },
+    { title: 'RPG3', category: 'adventure', keywords: 'RPG 冒険 物語', url: 'https://github.com/titan11111/054-RPG3', icon: '⚔️' },
+    { title: 'ブロック崩し', category: 'action', keywords: 'ブロック ブロック崩し', url: 'https://titan11111.github.io/055-block/', icon: '🧱' },
+    { title: 'テトリス2', category: 'puzzle', keywords: 'テトリス ブロック パズル 2', url: 'https://github.com/titan11111/056-tetoris2', icon: '🎲' },
+    { title: 'インベーダー：宇宙防衛戦', category: 'action', keywords: 'インベーダー シューティング 宇宙', url: 'https://titan11111.github.io/057-inveder/', icon: '👾' },
+    { title: 'ダイナス', category: 'action', keywords: '恐竜 アクション', url: 'https://github.com/titan11111/058-dainas', icon: '🦖' },
+    { title: 'インベーダーブロック：宇宙の攻防', category: 'action', keywords: 'インベーダー ブロック シューティング パズル', url: 'https://titan11111.github.io/059-inveder-block/', icon: '👾' },
+    { title: '電車2', category: 'adventure', keywords: '電車 旅 移動 2', url: 'https://github.com/titan11111/060-dennsya2', icon: '🚉' },
+    { title: 'リズムゲーム：ビートチャレンジ', category: 'action', keywords: 'リズム 音楽 ビート', url: 'https://titan11111.github.io/061-rizme/', icon: '🎵' },
+    { title: 'ローグライト', category: 'adventure', keywords: 'ローグ ライト ダンジョン', url: 'https://github.com/titan11111/062-roguelite', icon: '🌀' },
+    { title: 'リズム2', category: 'action', keywords: 'リズム 音楽 ビート 2', url: 'https://github.com/titan11111/063-rizme2', icon: '🎵' },
+    { title: 'ピンクマン：ドットの迷宮', category: 'action', keywords: 'ピンクマン パックマン 迷路', url: 'https://titan11111.github.io/064-pincman/', icon: '🟡' },
+    { title: 'RPG4', category: 'adventure', keywords: 'RPG 冒険 物語 4', url: 'https://github.com/titan11111/065-RPG4', icon: '⚔️' },
+    { title: 'ねこクイズ：にゃんこ知識テスト', category: 'quiz', keywords: 'ねこ 猫 クイズ', url: 'https://titan11111.github.io/066-catquiz/', icon: '🐱' }
+  ];
 
-  <script>
-    // ===== 音声効果 =====
-    function playBeep() {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-      oscillator.type = 'square';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.1);
-    }
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const q     = document.getElementById('q');
+  const count = document.getElementById('count');
 
-    function playSelectSound() {
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-      oscillator.frequency.setValueAtTime(900, audioContext.currentTime + 0.05);
-      oscillator.type = 'square';
-      
-      gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-      
-      oscillator.start(audioContext.currentTime);
-      oscillator.stop(audioContext.currentTime + 0.2);
-    }
-
-    // ===== ローカルストレージ =====
-    const STORAGE_KEY = 'titanPlayCounts_v1';
-
-    function loadPlayCounts() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : {};
-      } catch(e) {
-        console.warn('playCounts load failed', e);
-        return {};
-      }
-    }
-
-    function savePlayCounts(obj) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
-      } catch(e) {
-        console.warn('playCounts save failed', e);
-      }
-    }
-
-    let playCounts = loadPlayCounts();
-    function getCount(url) { return playCounts[url] || 0; }
-    function addCount(url) {
-      playCounts[url] = (playCounts[url] || 0) + 1;
-      savePlayCounts(playCounts);
-    }
-    function sumAllCounts() {
-      return Object.values(playCounts).reduce((a,b) => a + (typeof b === 'number' ? b : 0), 0);
-    }
-
-    // ===== ゲームデータ =====
-    const gameData = [
-      { title: 'ねこクイズ：にゃんこ知識テスト', category: 'quiz', keywords: 'ねこ 猫 クイズ', url: 'https://titan11111.github.io/66-catquiz/', icon: '🐱', isNew: true },
-      { title: 'ピンクマン：ドットの迷宮', category: 'action', keywords: 'ピンクマン パックマン 迷路', url: 'https://titan11111.github.io/64-pincman/', icon: '🟡', isNew: true },
-      { title:'RPG5：未知への旅', category:'adventure', keywords:'RPG ファンタジー 冒険', url:'https://titan11111.github.io/65-RPG5/', icon:'🛡️', isNew:true },
-      { title: 'RPG：新たな冒険', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/64-RPG-/', icon: '🛡️', isNew: true },
-      { title: 'アクションRPG', category: 'action adventure', keywords: 'ARPG アクション RPG 剣 爆弾 モバイル', url: 'https://titan11111.github.io/44-action-RPG/', icon: '🗡️', isNew: true },
-      { title: '爆速宅配人 3D', category: 'adventure', keywords: 'RPG ファンタジー 冒険 4', url: 'https://titan11111.github.io/62-RPG4/', icon: '🛡️', isNew: true },
-      { title: 'リズムゲーム：ビートチャレンジ', category: 'action', keywords: 'リズム 音楽 ビート', url: 'https://titan11111.github.io/61-rizme/', icon: '🎵', isNew: true },
-      { title: 'インベーダーブロック：宇宙の攻防', category: 'action', keywords: 'インベーダー ブロック シューティング パズル', url: 'https://titan11111.github.io/59-inveder-block/', icon: '👾', isNew: true },
-      { title: 'インベーダー：宇宙防衛戦', category: 'action', keywords: 'インベーダー シューティング 宇宙', url: 'https://titan11111.github.io/57-inveder/', icon: '👾', isNew: true },
-      { title: 'ブロック崩し', category: 'action', keywords: 'ブロック ブロック崩し', url: 'https://titan11111.github.io/55-block/', icon: '🧱', isNew: true },
-      { title: 'RPG：勇者の帰還', category: 'adventure', keywords: 'RPG ファンタジー 冒険 勇者', url: 'https://titan11111.github.io/54-RPG-/', icon: '🛡️', isNew: true },
-      { title: 'スキャンファイターズ：超反応バトル', category: 'battle action', keywords: 'スキャン ファイター バトル', url: 'https://titan11111.github.io/53-SCAN-FIGHTERS/', icon: '🛰️', isNew: true },
-      { title: '爆速配達人:家を探せ！', category: 'action', keywords: 'アクション ヒーロー 戦闘', url: 'https://titan11111.github.io/52-action3/', icon: '⚡', isNew: true },
-      { title: 'アクションジャンプ：天空への挑戦', category: 'action', keywords: 'アクション ジャンプ', url: 'https://titan11111.github.io/50-action-jamp/', icon: '🏃', isNew: true },
-      { title: 'テトリス：落ち物パズル', category: 'action', keywords: 'テトリス パズル ブロック', url: 'https://titan11111.github.io/50-tetoris/', icon: '🧩', isNew: true },
-      { title: 'ルーレット：運命の回転', category: 'quiz', keywords: 'ルーレット 運 試し', url: 'https://titan11111.github.io/51-rulet/', icon: '🎰', isNew: true },
-      { title: 'クエスト：冒険の始まり', category: 'adventure', keywords: 'クエスト 冒険 RPG', url: 'https://titan11111.github.io/50-quest/', icon: '🗡️', isNew: true },
-      { title: 'ブロックの世界', category: 'adventure', keywords: 'マイクラ Minecraft ブロック', url: 'https://titan11111.github.io/49-maikura/', icon: '⛏️', isNew: true },
-      { title: '暗闇の車両サウンドノベル　第１章　ハジマリ', category: 'adventure', keywords: '電車 列車 乗り物', url: 'https://titan11111.github.io/47-dennsya/', icon: '🚆', isNew: true },
-      { title: 'ミタ：未知の冒険', category: 'adventure', keywords: 'ミタ 冒険', url: 'https://titan11111.github.io/46-mita/', icon: '👀', isNew: true },
-      { title: '魔塔：闇の塔の試練', category: 'adventure', keywords: '魔塔 塔 ダンジョン', url: 'https://titan11111.github.io/45-matou/', icon: '🗼', isNew: true },
-      { title: 'ねくび2：夢幻の冒険', category: 'adventure', keywords: 'ねくび 眠り 夢', url: 'https://titan11111.github.io/44-nekubi2/', icon: '😴', isNew: true },
-      { title: '格闘チャンピオン2：最強の挑戦者', category: 'battle action', keywords: '格闘 バトル 対戦', url: 'https://titan11111.github.io/43-kakuge2/', icon: '🥊', isNew: true },
-      { title: '３Ｄシューティングゲーム', category: 'action', keywords: 'シューティング 宇宙 弾幕', url: 'https://titan11111.github.io/42-syutinngu/', icon: '🚀', isNew: true },
-      { title: '家の見取り図', category: 'adventure', keywords: 'ホラー 怖い 脱出', url: 'https://titan11111.github.io/41-horaa2/', icon: '👻', isNew: true },
-      { title: '格闘チャンピオン', category: 'battle action', keywords: '格闘 バトル 対戦', url: 'https://titan11111.github.io/40-kakuge/', icon: '🥊', isNew: true },
-      { title: '深夜のコンビニ店員', category: 'adventure', keywords: 'ホラー 怖い 脱出', url: 'https://titan11111.github.io/39-horaa/', icon: '👻', isNew: true },
-      { title: '星空バトラー', category: 'action', keywords: 'シューティング 宇宙 弾幕', url: 'https://titan11111.github.io/38-shoot3/', icon: '🚀', isNew: true },
-      { title: '冒険RPG：伝説の始まり', category: 'adventure', keywords: 'RPG ファンタジー 冒険', url: 'https://titan11111.github.io/37-RPG/', icon: '🧙‍♂️', isNew: true },
-      { title: '学園アドベンチャー：ひみつの放課後', category: 'adventure', keywords: '学園 学校', url: 'https://titan11111.github.io/35-gakuen/', icon: '🏫', isNew: true },
-      { title: 'デモンキャッスル：魔城の試練', category: 'adventure', keywords: 'デモン キャッスル 魔物', url: 'https://titan11111.github.io/34-demon_castle/', icon: '🏰', isNew: true },
-      { title: 'ねくび：夢みる旅人', category: 'adventure', keywords: 'ねくび 眠り 夢', url: 'https://titan11111.github.io/33--nekubi/', icon: '😴', isNew: true },
-      { title: 'シューティング2：炎の逆襲', category: 'action', keywords: 'シューティング 射撃 連射', url: 'https://titan11111.github.io/32-shoot2/', icon: '🎯', isNew: true },
-      { title: 'シューティング1：初めての戦場', category: 'action', keywords: 'シューティング 射撃', url: 'https://titan11111.github.io/31-shoot/', icon: '🔫', isNew: true },
-      { title: '世界樹探検：伝説の樹を求めて', category: 'adventure', keywords: '神秘 ファンタジー 冒険 世界樹 探検', url: 'https://titan11111.github.io/30-yugudora/', icon: '🌳', isNew: true },
-      { title: 'クイズ4：超難問チャレンジ', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/titan11111-quiz4/', icon: '🧠', isNew: true },
-      { title: 'クイズ3：ひらめき勝負', category: 'quiz', keywords: 'クイズ 問題 頭脳', url: 'https://titan11111.github.io/28-quiz3/', icon: '🧠' },
-      { title: '迷いの森：ささやく木々の誘い', category: 'adventure', keywords: '森 迷い 神秘 探索', url: 'https://titan11111.github.io/27-mayoimori/', icon: '🌲' },
-      { title: '坊主めくり：運試しバトル', category: 'quiz', keywords: '坊主 めくり カード 伝統', url: 'https://titan11111.github.io/26-bouzu/', icon: '🎴' },
-      { title: '平和な世界の村人の悩み解決屋さん', category: 'adventure', keywords: '平和 世界 村人 悩み 解決', url: 'https://titan11111.github.io/25-heiwa/', icon: '🕊️' },
-      { title: 'ねこねこねこ：にゃんこパレード', category: 'action', keywords: 'ねこ 猫 たくさん', url: 'https://titan11111.github.io/24-nekonekoneko/', icon: '😸' },
-      { title: '給食当番リズム：キッチンビート', category: 'action', keywords: '給食 リズム 学校', url: 'https://titan11111.github.io/23-kyuusyoku/', icon: '🍽️' },
-      { title: 'おさんぽ日和：てくてく冒険', category: 'adventure', keywords: '散歩 探索 のんびり', url: 'https://titan11111.github.io/21-sanpo/', icon: '🚶' },
-      { title: '対称パズル：ミラーの魔法', category: 'adventure', keywords: '対称 パズル 美しい', url: 'https://titan11111.github.io/20-taisyou/', icon: '✨' },
-      { title: 'らっか：スカイドロップ', category: 'action', keywords: '落下 アクション スピード 反射神経', url: 'https://titan11111.github.io/19-rakka/', icon: '🪂', isNew: true },
-      { title: 'サイバー英語：ネオンの学習', category: 'quiz learning', keywords: '英語 学習 サイバー 中学', url: 'https://titan11111.github.io/18-eigo2/', icon: '🌐' },
-      { title: 'アクションミニゲーム', category: 'action', keywords: '電脳 サイバー アクション SF', url: 'https://titan11111.github.io/17-action/', icon: '🚀' },
-      { title: 'ロボットランナー：メカダッシュ', category: 'action', keywords: 'ロボット ランナー 走る', url: 'https://titan11111.github.io/16-nigeru/', icon: '🤖' },
-      { title: 'セルフトーク：ココロと対話', category: 'adventure', keywords: 'セルフトーク 対話 心', url: 'https://titan11111.github.io/15-selftalk/', icon: '💭' },
-      { title: 'ドキドキ診断：ハートチェック', category: 'quiz', keywords: '診断 ドキドキ 心理', url: 'https://titan11111.github.io/14-dokidoki/', icon: '💖' },
-      { title: '歴史ストーリー：時空の旅', category: 'quiz learning', keywords: '歴史 勉強 ストーリー', url: 'https://titan11111.github.io/13-histry/', icon: '📚' },
-      { title: '商売体験：マーケットマスター', category: 'adventure', keywords: '商売 売買 体験 シミュレーション', url: 'https://titan11111.github.io/12-buysell_game/', icon: '💰' },
-      { title: '買い物ゲーム：ショップチャレンジ', category: 'adventure', keywords: '買い物 ショッピング お金', url: 'https://titan11111.github.io/11-kaimono_game/', icon: '🛒' },
-      { title: '選択クイズ：正解を選べ', category: 'quiz', keywords: '選択 クイズ 問題', url: 'https://titan11111.github.io/10-senntaku_game/', icon: '❓' },
-      { title: 'モンスタークイズバトル！', category: 'battle', keywords: 'バトル 戦闘 戦い 2', url: 'https://titan11111.github.io/9-battle2-game/', icon: '⚔️', isNew: true },
-      { title: '酸アルバトル：科学バトル', category: 'battle learning', keywords: '酸 アルカリ 化学 バトル', url: 'https://titan11111.github.io/8-sannaru_game/', icon: '⚗️' },
-      { title: '色育成：カラーワールド', category: 'adventure', keywords: '色 育成 カラー', url: 'https://titan11111.github.io/7-iro_game/', icon: '🌈' },
-      { title: '迷路クイズ：ラビリンスチャレンジ', category: 'adventure quiz', keywords: '迷路 クイズ RPG 冒険', url: 'https://titan11111.github.io/5-meiro_game/', icon: '🗺️' },
-      { title: 'バトルゲーム：ソードアリーナ', category: 'battle', keywords: 'バトル 戦闘 戦い', url: 'https://titan11111.github.io/4-battle-game/', icon: '⚔️' },
-      { title: 'あみだくじ：ラッキーパス', category: 'adventure', keywords: 'あみだ くじ 運 選択', url: 'https://titan11111.github.io/3-amida-game/', icon: '🎯' },
-      { title: '化合物クイズ：サイエンスピース', category: 'quiz learning', keywords: '化合物 科学 理科 クイズ', url: 'https://titan11111.github.io/2-kagoubutu_game/', icon: '🧪' },
-      { title: 'ねこキャッチ：すばやく捕まえよう', category: 'action', keywords: 'ねこ 猫 キャッチ 動物', url: 'https://titan11111.github.io/1-neko_catch_game/', icon: '🐱' }
-    ];
-
-    // カテゴリーの正規化
-    function normalizeCategory(game) {
-      const text = (game.title + ' ' + game.keywords).toLowerCase();
-      if (text.includes('rpg')) {
-        game.category = 'rpg';
-      } else if (text.includes('シューティング') || text.includes('shoot')) {
-        game.category = 'shooting';
-      } else if (game.category.includes('battle')) {
-        game.category = 'battle';
-      } else if (game.category.includes('quiz')) {
-        game.category = 'quiz';
-      } else if (game.category.includes('learning')) {
-        game.category = 'learning';
-      } else if (game.category.includes('action')) {
-        game.category = 'action';
-      } else {
-        game.category = 'adventure';
-      }
-    }
-    gameData.forEach(normalizeCategory);
-
-    // ===== グローバル変数 =====
-    let currentPage = 1;
-    const itemsPerPage = 12;
-    let filteredGames = [];
-    let baseGames = [];
-    let currentCategory = 'all';
-    let currentSort = 'mixed';
-
-    // ===== DOM要素 =====
-    const gamesList = document.getElementById('gamesList');
-    const searchInput = document.getElementById('searchInput');
-    const searchBtn = document.getElementById('searchBtn');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const sortBtns = document.querySelectorAll('.sort-btn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const pageNumbers = document.getElementById('pageNumbers');
-    const gameCount = document.getElementById('gameCount');
-    const totalGames = document.getElementById('totalGames');
-    const newGames = document.getElementById('newGames');
-    const categories = document.getElementById('categories');
-    const totalPlays = document.getElementById('totalPlays');
-    const loading = document.getElementById('loading');
-
-    // ===== 初期化 =====
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        loading.classList.add('hidden');
-        initializeApp();
-      }, 1200);
-    });
-
-    function initializeApp() {
-      baseGames = [...gameData];
-      filteredGames = [...baseGames];
-      
-      updateStats();
-      sortGames();
-      renderGames();
-      setupEventListeners();
-      updatePagination();
-    }
-
-    // ===== ソート機能 =====
-    function sortGames() {
-      switch(currentSort) {
-        case 'mixed':
-          // 人気＆最新順（プレイ回数＋新しさの複合）
-          filteredGames.sort((a, b) => {
-            const aScore = getCount(a.url) * 2 + (a.isNew ? 10 : 0);
-            const bScore = getCount(b.url) * 2 + (b.isNew ? 10 : 0);
-            return bScore - aScore;
-          });
-          break;
-        case 'plays':
-          // プレイ回数順
-          filteredGames.sort((a, b) => getCount(b.url) - getCount(a.url));
-          break;
-        case 'new':
-          // 新着順
-          filteredGames.sort((a, b) => {
-            if (a.isNew && !b.isNew) return -1;
-            if (!a.isNew && b.isNew) return 1;
-            return 0;
-          });
-          break;
-        case 'title':
-          // タイトル順
-          filteredGames.sort((a, b) => a.title.localeCompare(b.title, 'ja'));
-          break;
-      }
-    }
-
-    // ===== 統計更新 =====
-    function updateStats() {
-      totalGames.textContent = baseGames.length;
-      newGames.textContent = baseGames.filter(g => g.isNew).length;
-
-      const unique = new Set();
-      baseGames.forEach(g => g.category.split(' ').forEach(c => unique.add(c)));
-      categories.textContent = unique.size;
-
-      totalPlays.textContent = sumAllCounts();
-
-      animateCountUp(totalGames, parseInt(totalGames.textContent, 10));
-      animateCountUp(newGames, parseInt(newGames.textContent, 10));
-      animateCountUp(categories, parseInt(categories.textContent, 10));
-      animateCountUp(totalPlays, parseInt(totalPlays.textContent, 10));
-    }
-
-    function animateCountUp(el, target) {
-      let cur = 0;
-      const inc = Math.max(1, target / 50);
-      const t = setInterval(() => {
-        cur += inc;
-        if (cur >= target) {
-          cur = target;
-          clearInterval(t);
-        }
-        el.textContent = Math.floor(cur);
-      }, 30);
-    }
-
-    // ===== イベントリスナー =====
-    function setupEventListeners() {
-      searchInput.addEventListener('input', handleSearch);
-      searchBtn.addEventListener('click', () => {
-        playBeep();
-        handleSearch();
-      });
-      searchInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') {
-          playBeep();
-          handleSearch();
-        }
-      });
-
-      filterBtns.forEach(btn => btn.addEventListener('click', () => {
-        playSelectSound();
-        handleFilter(btn);
-      }));
-
-      sortBtns.forEach(btn => btn.addEventListener('click', () => {
-        playSelectSound();
-        handleSort(btn);
-      }));
-
-      prevBtn.addEventListener('click', () => {
-        playBeep();
-        changePage(currentPage - 1);
-      });
-      nextBtn.addEventListener('click', () => {
-        playBeep();
-        changePage(currentPage + 1);
-      });
-    }
-
-    // ===== 検索処理 =====
-    function handleSearch() {
-      const term = searchInput.value.toLowerCase().trim();
-
-      if (term === '') {
-        filteredGames = baseGames.filter(g => currentCategory === 'all' || g.category.includes(currentCategory));
-      } else {
-        filteredGames = baseGames.filter(g => {
-          const matchCat = (currentCategory === 'all' || g.category.includes(currentCategory));
-          const matchText =
-            g.title.toLowerCase().includes(term) ||
-            g.keywords.toLowerCase().includes(term) ||
-            g.category.toLowerCase().includes(term);
-          return matchCat && matchText;
-        });
-      }
-      
-      currentPage = 1;
-      sortGames();
-      renderGames();
-      updatePagination();
-    }
-
-    // ===== フィルター処理 =====
-    function handleFilter(btn) {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      currentCategory = btn.dataset.category;
-      const term = searchInput.value.toLowerCase().trim();
-
-      if (currentCategory === 'all') {
-        filteredGames = baseGames.filter(g =>
-          term === '' ||
-          g.title.toLowerCase().includes(term) ||
-          g.keywords.toLowerCase().includes(term) ||
-          g.category.toLowerCase().includes(term)
-        );
-      } else {
-        filteredGames = baseGames.filter(g => {
-          const matchCat = g.category.includes(currentCategory);
-          const matchText = term === '' ||
-            g.title.toLowerCase().includes(term) ||
-            g.keywords.toLowerCase().includes(term) ||
-            g.category.toLowerCase().includes(term);
-          return matchCat && matchText;
-        });
-      }
-      
-      currentPage = 1;
-      sortGames();
-      renderGames();
-      updatePagination();
-    }
-
-    // ===== ソート処理 =====
-    function handleSort(btn) {
-      sortBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      currentSort = btn.dataset.sort;
-      sortGames();
-      renderGames();
-      updatePagination();
-    }
-
-    // ===== ゲーム描画 =====
-    function renderGames() {
-      const start = (currentPage - 1) * itemsPerPage;
-      const end = start + itemsPerPage;
-      const pageGames = filteredGames.slice(start, end);
-
-      gamesList.innerHTML = '';
-      gameCount.textContent = `(${filteredGames.length})`;
-
-      if (pageGames.length === 0) {
-        gamesList.innerHTML = `
-          <div style="grid-column:1/-1;text-align:center;padding:3rem;color:#ffffff;">
-            <div style="font-size:4rem;margin-bottom:1rem;">😅</div>
-            <h3 style="color:#ffff00;margin-bottom:1rem;text-shadow:2px 2px 0 #000033;">ゲームが見つかりません</h3>
-            <p style="color:#00ffff;">別のキーワードで検索してみてください</p>
-          </div>`;
-        return;
-      }
-
-      pageGames.forEach((game, i) => {
-        const card = createGameCard(game);
-        card.style.animationDelay = `${i * 0.1}s`;
-        gamesList.appendChild(card);
-      });
-    }
-
-    // ===== ゲームカード作成 =====
-    function createGameCard(game) {
-      const card = document.createElement('div');
-      card.className = 'game-card';
+  function render(list){
+    grid.innerHTML = '';
+    count.textContent = `表示：${list.length} 件 / 全 ${GAMES.length} 件`;
+    if (!list.length){ empty.hidden = false; return; }
+    empty.hidden = true;
+    for (const g of list){
+      const card = document.createElement('article');
+      card.className = 'card';
       card.innerHTML = `
-        <div class="game-header">
-          <div class="game-icon">${game.icon}</div>
-          <div class="game-title">${game.title}</div>
-          ${game.isNew ? '<div class="new-badge">NEW!</div>' : ''}
-        </div>
-        <div class="game-keywords">${game.keywords}</div>
-        <div class="play-count">
-          総プレイ回数: <span class="count-pill"><span class="count-num">${getCount(game.url)}</span> 回</span>
-        </div>
-        <button class="play-btn">🎮 PLAY GAME</button>
+        <div class="icon" aria-hidden="true">${g.icon || '🎮'}</div>
+        <div class="title">${g.title}</div>
+        <div class="meta">カテゴリ：${g.category || '—'}</div>
+        <div class="tags">${(g.keywords || '').split(/\s+/).filter(Boolean).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+        <a class="btn" href="${g.url}" target="_blank" rel="noopener">あそぶ / 開く</a>
       `;
-      
-      const playBtn = card.querySelector('.play-btn');
-      playBtn.addEventListener('click', (e) => {
-        playSelectSound();
-        const btn = e.currentTarget;
-        btn.style.transform = 'scale(0.95)';
-        
-        addCount(game.url);
-        const numEl = card.querySelector('.count-num');
-        if (numEl) numEl.textContent = getCount(game.url);
-        if (totalPlays) totalPlays.textContent = sumAllCounts();
-        
-        setTimeout(() => {
-          btn.style.transform = '';
-          window.open(game.url, '_blank');
-        }, 150);
-      });
-      
-      return card;
+      grid.appendChild(card);
     }
+  }
 
-    // ===== ページネーション =====
-    function updatePagination() {
-      const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
-      prevBtn.disabled = (currentPage === 1);
-      nextBtn.disabled = (currentPage === totalPages || totalPages === 0);
+  function filter(){
+    const term = (q.value || '').trim().toLowerCase();
+    if (!term) return render(GAMES);
+    const hit = GAMES.filter(g =>
+      [g.title, g.category, g.keywords].join(' ').toLowerCase().includes(term)
+    );
+    render(hit);
+  }
 
-      pageNumbers.innerHTML = '';
-      if (totalPages <= 1) return;
-
-      const maxVisible = 5;
-      let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
-      let end = Math.min(totalPages, start + maxVisible - 1);
-      if (end - start + 1 < maxVisible) {
-        start = Math.max(1, end - maxVisible + 1);
-      }
-
-      for (let i = start; i <= end; i++) {
-        const pageBtn = document.createElement('div');
-        pageBtn.className = `page-number ${i === currentPage ? 'active' : ''}`;
-        pageBtn.textContent = i;
-        pageBtn.addEventListener('click', () => {
-          playBeep();
-          changePage(i);
-        });
-        pageNumbers.appendChild(pageBtn);
-      }
-    }
-
-    function changePage(p) {
-      const totalPages = Math.ceil(filteredGames.length / itemsPerPage);
-      if (p < 1 || p > totalPages) return;
-      currentPage = p;
-      renderGames();
-      updatePagination();
-      document.querySelector('.games-section').scrollIntoView({ behavior: 'smooth' });
-    }
-  </script>
+  q.addEventListener('input', filter);
+  render(GAMES);
+</script>
 </body>
 </html>
